@@ -12,11 +12,13 @@ const Sidebar = ({ isOpen, onClose }) => {
     { name: "Tools", href: "/tools", icon: "Wrench" },
     { name: "Scripts", href: "/scripts", icon: "Code" },
     { name: "Community", href: "/community", icon: "Users" },
-    { name: "Calendar", href: "/calendar", icon: "Calendar" },
-    { name: "Wins", href: "/wins", icon: "Trophy" },
-    { name: "Recommendations", href: "/recommendations", icon: "Lightbulb" },
-    { name: "Admin", href: "/admin", icon: "Settings" }
-  ];
+{ name: "Calendar", href: "/calendar", icon: "Calendar" },
+{ name: "Wins", href: "/wins", icon: "Trophy" },
+{ name: "Recommendations", href: "/recommendations", icon: "Lightbulb" },
+{ name: "Your AI", href: "/your-ai", icon: "Bot" },
+{ name: "Settings", href: "/settings", icon: "User" },
+{ name: "Admin", href: "/admin", icon: "Settings" }
+];
 
   const NavItem = ({ item }) => (
     <NavLink

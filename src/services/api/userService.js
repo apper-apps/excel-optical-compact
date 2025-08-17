@@ -81,13 +81,45 @@ export const userService = {
     return { ...users[userIndex] };
   },
 
-  async sendInvitation(email, role = 'user') {
-    await delay(500);
-    // Simulate email invitation
-    return {
-      success: true,
-      message: `Invitation sent to ${email}`,
-      invitedAt: new Date().toISOString()
-    };
-  }
+async sendInvitation(email, role = 'user') {
+await delay(500);
+// Simulate email invitation
+return {
+success: true,
+message: `Invitation sent to ${email}`,
+invitedAt: new Date().toISOString()
+};
+},
+
+async updateApiKey(userId, apiKey) {
+await delay(300);
+const userIndex = users.findIndex(user => user.Id === parseInt(userId));
+if (userIndex === -1) throw new Error("User not found");
+
+users[userIndex] = {
+...users[userIndex],
+straicoApiKey: apiKey
+};
+
+return { ...users[userIndex] };
+},
+
+async getApiKey(userId) {
+await delay(200);
+const user = users.find(user => user.Id === parseInt(userId));
+if (!user) throw new Error("User not found");
+return user.straicoApiKey || null;
+},
+
+async validateApiKey(apiKey) {
+await delay(500);
+// Simulate API key validation
+if (!apiKey || apiKey.length < 20) {
+throw new Error("Invalid API key format");
+}
+return {
+valid: true,
+message: "API key validated successfully"
+};
+}
 };
