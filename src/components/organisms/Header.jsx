@@ -17,9 +17,16 @@ const Header = ({ title, onMenuClick }) => {
           </h1>
         </div>
         
-        <div className="flex items-center space-x-4">
-          <button className="p-2 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors">
-            <ApperIcon name="Bell" className="h-5 w-5" />
+<div className="flex items-center space-x-4">
+          <button 
+            onClick={() => {
+              const { logout } = require('../../App').AuthContext._currentValue || {};
+              if (logout) logout();
+            }}
+            className="p-2 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+            title="Logout"
+          >
+            <ApperIcon name="LogOut" className="h-5 w-5" />
           </button>
           <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
             <span className="text-white text-sm font-semibold">NG</span>

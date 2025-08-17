@@ -1,74 +1,209 @@
-import messagesData from "@/services/mockData/messages.json";
-
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-let messages = [...messagesData];
 
 export const messageService = {
   async getAll() {
     await delay(300);
-    return [...messages].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "user_name_c" } },
+          { field: { Name: "user_avatar_c" } },
+          { field: { Name: "content_c" } },
+          { field: { Name: "attachments_c" } },
+          { field: { Name: "timestamp_c" } },
+          { field: { Name: "reactions_c" } },
+          { field: { Name: "user_id_c" } }
+        ],
+        orderBy: [
+          { fieldName: "timestamp_c", sorttype: "ASC" }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords('message_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching messages:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
+  },
+
+  async getRecent() {
+    await delay(200);
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "user_name_c" } },
+          { field: { Name: "user_avatar_c" } },
+          { field: { Name: "content_c" } },
+          { field: { Name: "timestamp_c" } }
+        ],
+        orderBy: [
+          { fieldName: "timestamp_c", sorttype: "DESC" }
+        ],
+        pagingInfo: { limit: 5, offset: 0 }
+      };
+
+      const response = await apperClient.fetchRecords('message_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching recent messages:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   },
 
   async create(messageData) {
     await delay(400);
-    const newId = Math.max(...messages.map(m => m.Id)) + 1;
-    const newMessage = {
-      Id: newId,
-      ...messageData,
-      timestamp: new Date().toISOString(),
-      reactions: []
-    };
-    messages.push(newMessage);
-    return { ...newMessage };
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        records: [{
+          Name: messageData.content_c?.substring(0, 50) || "Message",
+          user_name_c: messageData.user_name_c,
+          user_avatar_c: messageData.user_avatar_c,
+          content_c: messageData.content_c,
+          attachments_c: messageData.attachments_c ? JSON.stringify(messageData.attachments_c) : "",
+          timestamp_c: new Date().toISOString(),
+          reactions_c: "",
+          user_id_c: messageData.user_id_c
+        }]
+      };
+
+      const response = await apperClient.createRecord('message_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create message ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+        }
+        
+        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating message:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
+    }
   },
 
   async addReaction(messageId, emoji, userId, userName) {
     await delay(200);
-    const messageIndex = messages.findIndex(msg => msg.Id === parseInt(messageId));
-    if (messageIndex === -1) throw new Error("Message not found");
-    
-    const message = messages[messageIndex];
-    const reactionIndex = message.reactions.findIndex(r => r.emoji === emoji);
-    
-    if (reactionIndex === -1) {
-      message.reactions.push({
-        emoji,
-        count: 1,
-        users: [userName]
+    try {
+      // Get current message
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
       });
-    } else {
-      const reaction = message.reactions[reactionIndex];
-      if (!reaction.users.includes(userName)) {
-        reaction.count++;
-        reaction.users.push(userName);
-      }
-    }
-    
-    return { ...message };
-  },
 
-  async removeReaction(messageId, emoji, userId, userName) {
-    await delay(200);
-    const messageIndex = messages.findIndex(msg => msg.Id === parseInt(messageId));
-    if (messageIndex === -1) throw new Error("Message not found");
-    
-    const message = messages[messageIndex];
-    const reactionIndex = message.reactions.findIndex(r => r.emoji === emoji);
-    
-    if (reactionIndex !== -1) {
-      const reaction = message.reactions[reactionIndex];
-      const userIndex = reaction.users.indexOf(userName);
-      if (userIndex !== -1) {
-        reaction.count--;
-        reaction.users.splice(userIndex, 1);
-        
-        if (reaction.count === 0) {
-          message.reactions.splice(reactionIndex, 1);
+      const getParams = {
+        fields: [
+          { field: { Name: "reactions_c" } }
+        ]
+      };
+
+      const getResponse = await apperClient.getRecordById('message_c', parseInt(messageId), getParams);
+      
+      if (!getResponse.success) {
+        throw new Error("Message not found");
+      }
+
+      // Parse existing reactions
+      let reactions = [];
+      if (getResponse.data.reactions_c) {
+        try {
+          reactions = JSON.parse(getResponse.data.reactions_c);
+        } catch (e) {
+          reactions = [];
         }
       }
+
+      // Add or update reaction
+      const reactionIndex = reactions.findIndex(r => r.emoji === emoji);
+      if (reactionIndex === -1) {
+        reactions.push({
+          emoji,
+          count: 1,
+          users: [userName]
+        });
+      } else {
+        const reaction = reactions[reactionIndex];
+        if (!reaction.users.includes(userName)) {
+          reaction.count++;
+          reaction.users.push(userName);
+        }
+      }
+
+      // Update message
+      const updateParams = {
+        records: [{
+          Id: parseInt(messageId),
+          reactions_c: JSON.stringify(reactions)
+        }]
+      };
+
+      const updateResponse = await apperClient.updateRecord('message_c', updateParams);
+      
+      if (!updateResponse.success) {
+        throw new Error(updateResponse.message);
+      }
+
+      return updateResponse.results?.[0]?.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error adding reaction:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
     }
-    
-    return { ...message };
   }
 };

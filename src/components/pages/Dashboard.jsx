@@ -75,11 +75,11 @@ const loadDashboardData = async () => {
 
   if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={loadDashboardData} />;
-  const totalMetrics = {
-    totalSpend: metrics.reduce((sum, m) => sum + m.cost, 0),
-    totalConversions: metrics.reduce((sum, m) => sum + m.conversions, 0),
-    totalClicks: metrics.reduce((sum, m) => sum + m.clicks, 0),
-    avgOptScore: Math.round(metrics.reduce((sum, m) => sum + m.optimizationScore, 0) / metrics.length)
+const totalMetrics = {
+    totalSpend: metrics.reduce((sum, m) => sum + (m.cost_c || 0), 0),
+    totalConversions: metrics.reduce((sum, m) => sum + (m.conversions_c || 0), 0),
+    totalClicks: metrics.reduce((sum, m) => sum + (m.clicks_c || 0), 0),
+    avgOptScore: metrics.length > 0 ? Math.round(metrics.reduce((sum, m) => sum + (m.optimization_score_c || 0), 0) / metrics.length) : 0
   };
   return (
     <div className="space-y-8">
@@ -243,24 +243,24 @@ const loadDashboardData = async () => {
                     </Button>
                 </div>
                 <div className="space-y-4">
-                    {recentMessages.map(message => <div key={message.Id} className="flex items-start space-x-3">
+{recentMessages.map(message => <div key={message.Id} className="flex items-start space-x-3">
                         <div
                             className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
                             <span className="text-white text-xs font-semibold">
-                                {message.userAvatar}
+                                {message.user_avatar_c}
                             </span>
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2">
                                 <p className="text-sm font-medium text-gray-900">
-                                    {message.userName}
+                                    {message.user_name_c}
                                 </p>
                                 <p className="text-xs text-gray-500">
-                                    {new Date(message.timestamp).toLocaleDateString()}
+                                    {new Date(message.timestamp_c).toLocaleDateString()}
                                 </p>
                             </div>
                             <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                                {message.content}
+                                {message.content_c}
                             </p>
                         </div>
                     </div>)}
@@ -288,7 +288,7 @@ const loadDashboardData = async () => {
                     </Button>
                 </div>
                 <div className="space-y-4">
-                    {recentWins.map(win => <div key={win.Id} className="flex items-start space-x-3">
+{recentWins.map(win => <div key={win.Id} className="flex items-start space-x-3">
                         <div
                             className="w-8 h-8 bg-gradient-to-br from-warning to-yellow-500 rounded-full flex items-center justify-center">
                             <ApperIcon name="Trophy" className="w-4 h-4 text-white" />
@@ -296,18 +296,18 @@ const loadDashboardData = async () => {
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2">
                                 <p className="text-sm font-medium text-gray-900">
-                                    {win.userName}
+                                    {win.user_name_c}
                                 </p>
                                 <span
-                                    className={`px-2 py-1 text-xs rounded-full ${win.category === "professional" ? "bg-primary/10 text-primary" : "bg-secondary/10 text-secondary"}`}>
-                                    {win.category}
+                                    className={`px-2 py-1 text-xs rounded-full ${win.category_c === "professional" ? "bg-primary/10 text-primary" : "bg-secondary/10 text-secondary"}`}>
+                                    {win.category_c}
                                 </span>
                             </div>
                             <p className="text-sm font-medium text-gray-800 mt-1">
-                                {win.title}
+                                {win.title_c}
                             </p>
                             <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                                {win.description}
+                                {win.description_c}
                             </p>
                         </div>
                     </div>)}
@@ -344,33 +344,33 @@ const loadDashboardData = async () => {
                     </thead>
                     <tbody>
                         {metrics.slice(1).map(
-                            metric => <tr key={metric.Id} className="border-b border-gray-100 hover:bg-gray-50">
+metric => <tr key={metric.Id} className="border-b border-gray-100 hover:bg-gray-50">
                                 <td className="py-3">
                                     <div className="flex items-center space-x-3">
                                         <div
                                             className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
                                             <span className="text-white text-xs font-semibold">
-                                                {metric.userName.split(" ").map(n => n[0]).join("")}
+                                                {metric.user_name_c?.split(" ").map(n => n[0]).join("") || ""}
                                             </span>
                                         </div>
-                                        <span className="font-medium text-gray-900">{metric.userName}</span>
+                                        <span className="font-medium text-gray-900">{metric.user_name_c}</span>
                                     </div>
                                 </td>
-                                <td className="py-3 text-gray-600">{metric.account}</td>
+                                <td className="py-3 text-gray-600">{metric.account_c}</td>
                                 <td className="py-3 text-right">
                                     <span
-                                        className={`px-2 py-1 rounded-full text-xs font-medium ${metric.optimizationScore >= 90 ? "bg-secondary/10 text-secondary" : metric.optimizationScore >= 80 ? "bg-warning/10 text-yellow-700" : "bg-accent/10 text-accent"}`}>
-                                        {metric.optimizationScore}%
+                                        className={`px-2 py-1 rounded-full text-xs font-medium ${(metric.optimization_score_c || 0) >= 90 ? "bg-secondary/10 text-secondary" : (metric.optimization_score_c || 0) >= 80 ? "bg-warning/10 text-yellow-700" : "bg-accent/10 text-accent"}`}>
+                                        {metric.optimization_score_c || 0}%
                                                               </span>
                                 </td>
                                 <td className="py-3 text-right font-medium text-gray-900">
-                                    {formatNumber(metric.conversions)}
+                                    {formatNumber(metric.conversions_c || 0)}
                                 </td>
                                 <td className="py-3 text-right font-medium text-gray-900">
-                                    {formatCurrency(metric.cost)}
+                                    {formatCurrency(metric.cost_c || 0)}
                                 </td>
                                 <td className="py-3 text-right font-medium text-gray-900">
-                                    {metric.conversionRate}%
+                                    {metric.conversion_rate_c || 0}%
                                                         </td>
                             </tr>
                         )}
