@@ -14,9 +14,15 @@ export const winService = {
     await delay(200);
     const win = wins.find(win => win.Id === parseInt(id));
     if (!win) throw new Error("Win not found");
-    return { ...win };
+return { ...win };
   },
 
+  async getRecent() {
+    await delay(300);
+    return [...wins]
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      .slice(0, 5);
+  },
   async create(winData) {
     await delay(450);
     const newId = Math.max(...wins.map(w => w.Id)) + 1;
