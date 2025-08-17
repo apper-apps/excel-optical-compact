@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Router, Routes } from "react-router-dom";
+import { Route, BrowserRouter, Routes } from "react-router-dom";
 import Settings from "@/components/pages/Settings";
 import YourAI from "@/components/pages/YourAI";
 import Admin from "@/components/pages/Admin";
@@ -14,7 +14,7 @@ import Scripts from "@/components/pages/Scripts";
 import Layout from "@/components/organisms/Layout";
 function App() {
   return (
-    <Router>
+<BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
@@ -30,7 +30,7 @@ function App() {
 <Route path="/your-ai" element={<YourAI />} />
 </Route>
       </Routes>
-    </Router>
+</BrowserRouter>
   );
 }
 
