@@ -1,0 +1,58 @@
+[
+  {
+    "Id": 1,
+    "name": "SEMrush",
+    "description": "Comprehensive keyword research and competitor analysis tool for PPC campaigns.",
+    "icon": "Search",
+    "category": "Research"
+  },
+  {
+    "Id": 2,
+    "name": "Google Ads Editor",
+    "description": "Bulk editing tool for managing large Google Ads accounts efficiently.",
+    "icon": "Edit3",
+    "category": "Management"
+  },
+  {
+    "Id": 3,
+    "name": "Optmyzr",
+    "description": "AI-powered PPC optimization platform with automated bidding and reporting.",
+    "icon": "TrendingUp",
+    "category": "Optimization"
+  },
+  {
+    "Id": 4,
+    "name": "SpyFu",
+    "description": "Competitor intelligence tool to analyze competitor keywords and ad copy.",
+    "icon": "Eye",
+    "category": "Research"
+  },
+  {
+    "Id": 5,
+    "name": "Unbounce",
+    "description": "Landing page builder optimized for PPC traffic and conversion optimization.",
+    "icon": "MousePointer",
+    "category": "Landing Pages"
+  },
+  {
+    "Id": 6,
+    "name": "CallRail",
+    "description": "Call tracking and analytics platform for phone conversion attribution.",
+    "icon": "Phone",
+    "category": "Analytics"
+  },
+  {
+    "Id": 7,
+    "name": "Hotjar",
+    "description": "User behavior analytics with heatmaps and session recordings.",
+    "icon": "Activity",
+    "category": "Analytics"
+  },
+  {
+    "Id": 8,
+    "name": "Canva Pro",
+    "description": "Design tool for creating professional ad creatives and landing page graphics.",
+    "icon": "Image",
+    "category": "Creative"
+  }
+]

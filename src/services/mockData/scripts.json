@@ -1,0 +1,58 @@
+[
+  {
+    "Id": 1,
+    "name": "Automated Bid Adjustments",
+    "link": "https://github.com/example/bid-adjustments-script",
+    "category": "Bidding",
+    "description": "Automatically adjust bids based on performance metrics and time of day patterns."
+  },
+  {
+    "Id": 2,
+    "name": "Keyword Performance Monitor",
+    "link": "https://github.com/example/keyword-monitor-script",
+    "category": "Monitoring",
+    "description": "Monitor keyword performance and pause low-performing keywords automatically."
+  },
+  {
+    "Id": 3,
+    "name": "Ad Copy Testing Framework",
+    "link": "https://github.com/example/ad-copy-testing-script",
+    "category": "Testing",
+    "description": "Systematic ad copy testing with statistical significance calculations."
+  },
+  {
+    "Id": 4,
+    "name": "Budget Pacing Alert",
+    "link": "https://github.com/example/budget-pacing-script",
+    "category": "Budget Management",
+    "description": "Alert when campaigns are over or under-spending relative to monthly budgets."
+  },
+  {
+    "Id": 5,
+    "name": "Quality Score Optimizer",
+    "link": "https://github.com/example/quality-score-script",
+    "category": "Optimization",
+    "description": "Identify and optimize keywords with low quality scores for better ad rank."
+  },
+  {
+    "Id": 6,
+    "name": "Competitive Analysis",
+    "link": "https://github.com/example/competitive-analysis-script",
+    "category": "Research",
+    "description": "Analyze competitor presence in search results and auction insights."
+  },
+  {
+    "Id": 7,
+    "name": "Negative Keyword Harvester",
+    "link": "https://github.com/example/negative-keyword-script",
+    "category": "Optimization",
+    "description": "Automatically identify and add negative keywords based on search query reports."
+  },
+  {
+    "Id": 8,
+    "name": "Landing Page Speed Monitor",
+    "link": "https://github.com/example/page-speed-script",
+    "category": "Quality Assurance",
+    "description": "Monitor landing page load times and alert when pages are slow."
+  }
+]

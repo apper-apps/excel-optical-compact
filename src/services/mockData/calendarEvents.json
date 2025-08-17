@@ -1,0 +1,86 @@
+[
+  {
+    "Id": 1,
+    "title": "New Year's Day",
+    "date": "2024-01-01",
+    "type": "holiday",
+    "createdBy": "Nathan Garrett"
+  },
+  {
+    "Id": 2,
+    "title": "Martin Luther King Jr. Day",
+    "date": "2024-01-15",
+    "type": "holiday",
+    "createdBy": "Nathan Garrett"
+  },
+  {
+    "Id": 3,
+    "title": "Presidents' Day",
+    "date": "2024-02-19",
+    "type": "holiday",
+    "createdBy": "Nathan Garrett"
+  },
+  {
+    "Id": 4,
+    "title": "Memorial Day",
+    "date": "2024-05-27",
+    "type": "holiday",
+    "createdBy": "Nathan Garrett"
+  },
+  {
+    "Id": 5,
+    "title": "Independence Day",
+    "date": "2024-07-04",
+    "type": "holiday",
+    "createdBy": "Nathan Garrett"
+  },
+  {
+    "Id": 6,
+    "title": "Labor Day",
+    "date": "2024-09-02",
+    "type": "holiday",
+    "createdBy": "Nathan Garrett"
+  },
+  {
+    "Id": 7,
+    "title": "Thanksgiving Day",
+    "date": "2024-11-28",
+    "type": "holiday",
+    "createdBy": "Nathan Garrett"
+  },
+  {
+    "Id": 8,
+    "title": "Black Friday",
+    "date": "2024-11-29",
+    "type": "holiday",
+    "createdBy": "Nathan Garrett"
+  },
+  {
+    "Id": 9,
+    "title": "Christmas Eve",
+    "date": "2024-12-24",
+    "type": "holiday",
+    "createdBy": "Nathan Garrett"
+  },
+  {
+    "Id": 10,
+    "title": "Christmas Day",
+    "date": "2024-12-25",
+    "type": "holiday",
+    "createdBy": "Nathan Garrett"
+  },
+  {
+    "Id": 11,
+    "title": "Q1 Performance Review",
+    "date": "2024-03-29",
+    "type": "team-event",
+    "createdBy": "Nathan Garrett"
+  },
+  {
+    "Id": 12,
+    "title": "Google Ads Beta Testing Workshop",
+    "date": "2024-02-14",
+    "type": "team-event",
+    "createdBy": "Sarah Johnson"
+  }
+]

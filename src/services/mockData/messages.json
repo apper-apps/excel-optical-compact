@@ -1,0 +1,82 @@
+[
+  {
+    "Id": 1,
+    "userId": 2,
+    "userName": "Sarah Johnson",
+    "userAvatar": "SJ",
+    "content": "Hey team! Just wanted to share some insights from the latest campaign performance. Our automotive parts campaigns are showing a 15% improvement in CTR this month! 🚗",
+    "attachments": [],
+    "timestamp": "2024-01-20T10:15:00Z",
+    "reactions": [
+      { "emoji": "👍", "count": 3, "users": ["Mike Chen", "Emily Davis", "Alex Rodriguez"] },
+      { "emoji": "🎉", "count": 2, "users": ["Nathan Garrett", "Mike Chen"] }
+    ]
+  },
+  {
+    "Id": 2,
+    "userId": 3,
+    "userName": "Mike Chen",
+    "userAvatar": "MC",
+    "content": "That's awesome Sarah! I've been working on some new ad copy variations. Mind if I share the performance data in our next team meeting?",
+    "attachments": [],
+    "timestamp": "2024-01-20T10:18:00Z",
+    "reactions": [
+      { "emoji": "👍", "count": 1, "users": ["Sarah Johnson"] }
+    ]
+  },
+  {
+    "Id": 3,
+    "userId": 4,
+    "userName": "Emily Davis",
+    "userAvatar": "ED",
+    "content": "Quick question for everyone - has anyone tried the new Performance Max campaigns for our tire categories? I'm seeing mixed results and would love some input.",
+    "attachments": [],
+    "timestamp": "2024-01-20T09:45:00Z",
+    "reactions": [
+      { "emoji": "🤔", "count": 2, "users": ["Mike Chen", "Alex Rodriguez"] }
+    ]
+  },
+  {
+    "Id": 4,
+    "userId": 1,
+    "userName": "Nathan Garrett",
+    "userAvatar": "NG",
+    "content": "Great discussion everyone! I've uploaded some new training resources in the Learning Hub about Performance Max optimization. Check them out when you get a chance. 📚",
+    "attachments": [
+      {
+        "name": "Performance-Max-Guide.pdf",
+        "type": "pdf",
+        "size": "2.3 MB"
+      }
+    ],
+    "timestamp": "2024-01-20T09:30:00Z",
+    "reactions": [
+      { "emoji": "🙏", "count": 4, "users": ["Sarah Johnson", "Mike Chen", "Emily Davis", "Alex Rodriguez"] }
+    ]
+  },
+  {
+    "Id": 5,
+    "userId": 5,
+    "userName": "Alex Rodriguez",
+    "userAvatar": "AR",
+    "content": "Fun fact: Did you know that automotive searches peak at 2 PM on Tuesdays? I found this while analyzing our bid adjustments data. Might be worth testing some time-of-day optimizations! ⏰",
+    "attachments": [],
+    "timestamp": "2024-01-20T08:20:00Z",
+    "reactions": [
+      { "emoji": "🤯", "count": 3, "users": ["Sarah Johnson", "Emily Davis", "Mike Chen"] },
+      { "emoji": "📊", "count": 1, "users": ["Nathan Garrett"] }
+    ]
+  },
+  {
+    "Id": 6,
+    "userId": 2,
+    "userName": "Sarah Johnson",
+    "userAvatar": "SJ",
+    "content": "Coffee break anyone? ☕ I'll be in the break room for the next 10 minutes if anyone wants to chat about those Quality Score improvements we discussed yesterday.",
+    "attachments": [],
+    "timestamp": "2024-01-19T15:30:00Z",
+    "reactions": [
+      { "emoji": "☕", "count": 2, "users": ["Mike Chen", "Emily Davis"] }
+    ]
+  }
+]

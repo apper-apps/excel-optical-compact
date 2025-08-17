@@ -1,0 +1,89 @@
+[
+  {
+    "Id": 1,
+    "title": "PPC Fundamentals",
+    "videoLinks": [
+      {
+        "title": "Introduction to PPC Advertising",
+        "url": "https://www.dropbox.com/s/example1/ppc-intro.mp4",
+        "duration": "12:30"
+      },
+      {
+        "title": "Setting up Your First Campaign",
+        "url": "https://www.dropbox.com/s/example2/first-campaign.mp4",
+        "duration": "18:45"
+      }
+    ],
+    "resources": [
+      {
+        "title": "PPC Best Practices Guide",
+        "url": "https://example.com/ppc-best-practices",
+        "type": "PDF"
+      },
+      {
+        "title": "Keyword Research Tools",
+        "url": "https://example.com/keyword-tools",
+        "type": "Article"
+      }
+    ],
+    "lastUpdated": "2024-01-15T14:30:00Z"
+  },
+  {
+    "Id": 2,
+    "title": "Advanced Google Ads",
+    "videoLinks": [
+      {
+        "title": "Advanced Bidding Strategies",
+        "url": "https://www.dropbox.com/s/example3/advanced-bidding.mp4",
+        "duration": "25:15"
+      },
+      {
+        "title": "Audience Targeting Deep Dive",
+        "url": "https://www.dropbox.com/s/example4/audience-targeting.mp4",
+        "duration": "22:10"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Google Ads Script Library",
+        "url": "https://developers.google.com/google-ads/scripts",
+        "type": "Documentation"
+      },
+      {
+        "title": "Performance Max Guide",
+        "url": "https://example.com/performance-max",
+        "type": "PDF"
+      }
+    ],
+    "lastUpdated": "2024-01-18T10:15:00Z"
+  },
+  {
+    "Id": 3,
+    "title": "Analytics & Reporting",
+    "videoLinks": [
+      {
+        "title": "GA4 for PPC Marketers",
+        "url": "https://www.dropbox.com/s/example5/ga4-ppc.mp4",
+        "duration": "20:30"
+      },
+      {
+        "title": "Creating Custom Reports",
+        "url": "https://www.dropbox.com/s/example6/custom-reports.mp4",
+        "duration": "15:45"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Data Studio Templates",
+        "url": "https://example.com/data-studio-templates",
+        "type": "Template"
+      },
+      {
+        "title": "Attribution Models Explained",
+        "url": "https://example.com/attribution-models",
+        "type": "Article"
+      }
+    ],
+    "lastUpdated": "2024-01-12T16:45:00Z"
+  }
+]

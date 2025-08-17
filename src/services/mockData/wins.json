@@ -1,0 +1,73 @@
+[
+  {
+    "Id": 1,
+    "userId": 2,
+    "userName": "Sarah Johnson",
+    "userAvatar": "SJ",
+    "title": "Achieved 150% ROAS on Brake Pads Campaign",
+    "description": "Successfully optimized our brake pads campaign through strategic keyword refinement and ad copy testing, resulting in our highest ROAS this quarter!",
+    "category": "professional",
+    "timestamp": "2024-01-20T09:00:00Z",
+    "awards": [
+      { "type": "star", "fromUser": "Nathan Garrett", "message": "Outstanding work!" },
+      { "type": "trophy", "fromUser": "Mike Chen", "message": "Campaign optimization master!" }
+    ]
+  },
+  {
+    "Id": 2,
+    "userId": 3,
+    "userName": "Mike Chen",
+    "userAvatar": "MC",
+    "title": "Completed Google Ads Certification",
+    "description": "Just passed my Google Ads Search Certification with a 95% score! Ready to implement advanced strategies for our campaigns.",
+    "category": "professional",
+    "timestamp": "2024-01-19T16:30:00Z",
+    "awards": [
+      { "type": "medal", "fromUser": "Nathan Garrett", "message": "Congratulations on the achievement!" },
+      { "type": "star", "fromUser": "Emily Davis", "message": "Way to level up your skills!" }
+    ]
+  },
+  {
+    "Id": 3,
+    "userId": 4,
+    "userName": "Emily Davis",
+    "userAvatar": "ED",
+    "title": "Ran First Half Marathon",
+    "description": "Completed my first half marathon this weekend in 2:15:30! Training discipline really pays off, both in running and PPC optimization! 🏃‍♀️",
+    "category": "personal",
+    "timestamp": "2024-01-18T18:45:00Z",
+    "awards": [
+      { "type": "trophy", "fromUser": "Sarah Johnson", "message": "Amazing dedication!" },
+      { "type": "star", "fromUser": "Alex Rodriguez", "message": "Inspiring commitment!" }
+    ]
+  },
+  {
+    "Id": 4,
+    "userId": 5,
+    "userName": "Alex Rodriguez",
+    "userAvatar": "AR",
+    "title": "Reduced CPA by 35% Across All Campaigns",
+    "description": "Implemented automated bidding strategies and negative keyword optimization across our entire account, resulting in significant cost savings while maintaining conversion volume.",
+    "category": "professional",
+    "timestamp": "2024-01-17T14:20:00Z",
+    "awards": [
+      { "type": "medal", "fromUser": "Nathan Garrett", "message": "Exceptional optimization work!" },
+      { "type": "star", "fromUser": "Mike Chen", "message": "Data-driven excellence!" }
+    ]
+  },
+  {
+    "Id": 5,
+    "userId": 1,
+    "userName": "Nathan Garrett",
+    "userAvatar": "NG",
+    "title": "Team Achieved Q4 Revenue Goal",
+    "description": "Proud to announce that our PPC team exceeded Q4 revenue targets by 12%! This success belongs to everyone's hard work and collaboration.",
+    "category": "professional",
+    "timestamp": "2024-01-15T10:00:00Z",
+    "awards": [
+      { "type": "trophy", "fromUser": "Sarah Johnson", "message": "Great leadership!" },
+      { "type": "trophy", "fromUser": "Emily Davis", "message": "Team effort victory!" },
+      { "type": "medal", "fromUser": "Alex Rodriguez", "message": "Awesome team leadership!" }
+    ]
+  }
+]
