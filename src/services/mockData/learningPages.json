@@ -1,0 +1,98 @@
+[
+  {
+    "Id": 1,
+    "Name": "Google Ads Fundamentals",
+    "title_c": "Google Ads Fundamentals",
+    "video_links_c": "[{\"title\": \"Google Ads Setup Guide\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"15:30\"}, {\"title\": \"Campaign Structure Best Practices\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"12:45\"}, {\"title\": \"Keyword Research Essentials\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"18:20\"}]",
+    "resources_c": "[{\"type\": \"pdf\", \"title\": \"Google Ads Setup Checklist\", \"url\": \"/resources/google-ads-checklist.pdf\"}, {\"type\": \"template\", \"title\": \"Campaign Structure Template\", \"url\": \"/templates/campaign-structure.xlsx\"}, {\"type\": \"link\", \"title\": \"Google Ads Help Center\", \"url\": \"https://support.google.com/google-ads\"}]",
+    "last_updated_c": "2024-01-15T10:30:00Z"
+  },
+  {
+    "Id": 2,
+    "Name": "Facebook Ads Mastery",
+    "title_c": "Facebook Ads Mastery",
+    "video_links_c": "[{\"title\": \"Facebook Ads Manager Overview\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"14:15\"}, {\"title\": \"Audience Targeting Strategies\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"16:30\"}, {\"title\": \"Creative Best Practices\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"13:45\"}]",
+    "resources_c": "[{\"type\": \"pdf\", \"title\": \"Facebook Ads Optimization Guide\", \"url\": \"/resources/facebook-ads-guide.pdf\"}, {\"type\": \"template\", \"title\": \"Ad Creative Brief Template\", \"url\": \"/templates/creative-brief.docx\"}, {\"type\": \"link\", \"title\": \"Facebook Business Help Center\", \"url\": \"https://www.facebook.com/business/help\"}]",
+    "last_updated_c": "2024-01-12T14:20:00Z"
+  },
+  {
+    "Id": 3,
+    "Name": "Analytics and Reporting",
+    "title_c": "Analytics and Reporting",
+    "video_links_c": "[{\"title\": \"Google Analytics 4 Setup\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"20:10\"}, {\"title\": \"Conversion Tracking Essentials\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"17:25\"}, {\"title\": \"Custom Reporting Dashboard\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"22:30\"}]",
+    "resources_c": "[{\"type\": \"pdf\", \"title\": \"Analytics Setup Checklist\", \"url\": \"/resources/analytics-checklist.pdf\"}, {\"type\": \"template\", \"title\": \"Monthly Report Template\", \"url\": \"/templates/monthly-report.pptx\"}, {\"type\": \"link\", \"title\": \"Google Analytics Academy\", \"url\": \"https://analytics.google.com/analytics/academy\"}]",
+    "last_updated_c": "2024-01-18T09:15:00Z"
+  },
+  {
+    "Id": 4,
+    "Name": "Landing Page Optimization",
+    "title_c": "Landing Page Optimization",
+    "video_links_c": "[{\"title\": \"Landing Page Design Principles\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"19:45\"}, {\"title\": \"A/B Testing Strategies\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"15:20\"}, {\"title\": \"Mobile Optimization Tips\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"12:10\"}]",
+    "resources_c": "[{\"type\": \"pdf\", \"title\": \"Landing Page Optimization Guide\", \"url\": \"/resources/landing-page-guide.pdf\"}, {\"type\": \"template\", \"title\": \"Landing Page Wireframe Kit\", \"url\": \"/templates/wireframe-kit.sketch\"}, {\"type\": \"link\", \"title\": \"Unbounce Landing Page Examples\", \"url\": \"https://unbounce.com/landing-page-examples\"}]",
+    "last_updated_c": "2024-01-10T16:45:00Z"
+  },
+  {
+    "Id": 5,
+    "Name": "Bid Management Strategies",
+    "title_c": "Bid Management Strategies",
+    "video_links_c": "[{\"title\": \"Manual vs Automated Bidding\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"18:30\"}, {\"title\": \"Smart Bidding Strategies\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"16:15\"}, {\"title\": \"Budget Optimization Techniques\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"14:40\"}]",
+    "resources_c": "[{\"type\": \"pdf\", \"title\": \"Bidding Strategy Comparison\", \"url\": \"/resources/bidding-comparison.pdf\"}, {\"type\": \"template\", \"title\": \"Bid Management Spreadsheet\", \"url\": \"/templates/bid-management.xlsx\"}, {\"type\": \"link\", \"title\": \"Google Ads Bidding Guide\", \"url\": \"https://support.google.com/google-ads/topic/3119071\"}]",
+    "last_updated_c": "2024-01-08T11:30:00Z"
+  },
+  {
+    "Id": 6,
+    "Name": "Quality Score Optimization",
+    "title_c": "Quality Score Optimization",
+    "video_links_c": "[{\"title\": \"Understanding Quality Score\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"13:25\"}, {\"title\": \"Improving Ad Relevance\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"15:10\"}, {\"title\": \"Landing Page Experience\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"17:30\"}]",
+    "resources_c": "[{\"type\": \"pdf\", \"title\": \"Quality Score Improvement Guide\", \"url\": \"/resources/quality-score-guide.pdf\"}, {\"type\": \"template\", \"title\": \"Quality Score Audit Template\", \"url\": \"/templates/quality-score-audit.xlsx\"}, {\"type\": \"link\", \"title\": \"Quality Score Best Practices\", \"url\": \"https://support.google.com/google-ads/answer/140351\"}]",
+    "last_updated_c": "2024-01-14T13:20:00Z"
+  },
+  {
+    "Id": 7,
+    "Name": "Audience Targeting",
+    "title_c": "Audience Targeting",
+    "video_links_c": "[{\"title\": \"Customer Match Setup\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"16:45\"}, {\"title\": \"Similar Audiences Strategy\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"14:20\"}, {\"title\": \"Demographic Targeting Tips\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"12:35\"}]",
+    "resources_c": "[{\"type\": \"pdf\", \"title\": \"Audience Targeting Playbook\", \"url\": \"/resources/audience-targeting.pdf\"}, {\"type\": \"template\", \"title\": \"Audience Research Template\", \"url\": \"/templates/audience-research.xlsx\"}, {\"type\": \"link\", \"title\": \"Google Ads Audience Manager\", \"url\": \"https://support.google.com/google-ads/topic/3122863\"}]",
+    "last_updated_c": "2024-01-16T15:10:00Z"
+  },
+  {
+    "Id": 8,
+    "Name": "Campaign Structure",
+    "title_c": "Campaign Structure",
+    "video_links_c": "[{\"title\": \"Campaign Organization Best Practices\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"21:15\"}, {\"title\": \"Ad Group Structure\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"18:40\"}, {\"title\": \"Keyword Grouping Strategies\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"16:25\"}]",
+    "resources_c": "[{\"type\": \"pdf\", \"title\": \"Campaign Structure Guide\", \"url\": \"/resources/campaign-structure.pdf\"}, {\"type\": \"template\", \"title\": \"Account Structure Template\", \"url\": \"/templates/account-structure.xlsx\"}, {\"type\": \"link\", \"title\": \"Campaign Structure Examples\", \"url\": \"https://support.google.com/google-ads/answer/2453952\"}]",
+    "last_updated_c": "2024-01-11T10:45:00Z"
+  },
+  {
+    "Id": 9,
+    "Name": "Ad Extensions Guide",
+    "title_c": "Ad Extensions Guide",
+    "video_links_c": "[{\"title\": \"Sitelink Extensions Setup\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"11:30\"}, {\"title\": \"Call Extensions Best Practices\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"9:45\"}, {\"title\": \"Structured Snippets Optimization\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"13:20\"}]",
+    "resources_c": "[{\"type\": \"pdf\", \"title\": \"Ad Extensions Cheat Sheet\", \"url\": \"/resources/ad-extensions-cheat-sheet.pdf\"}, {\"type\": \"template\", \"title\": \"Extensions Planning Template\", \"url\": \"/templates/extensions-planning.xlsx\"}, {\"type\": \"link\", \"title\": \"Ad Extensions Help\", \"url\": \"https://support.google.com/google-ads/topic/3119133\"}]",
+    "last_updated_c": "2024-01-09T14:55:00Z"
+  },
+  {
+    "Id": 10,
+    "Name": "Conversion Tracking",
+    "title_c": "Conversion Tracking",
+    "video_links_c": "[{\"title\": \"Conversion Tracking Setup\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"19:20\"}, {\"title\": \"Enhanced Conversions Guide\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"17:10\"}, {\"title\": \"Attribution Models Explained\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"15:45\"}]",
+    "resources_c": "[{\"type\": \"pdf\", \"title\": \"Conversion Tracking Implementation\", \"url\": \"/resources/conversion-tracking.pdf\"}, {\"type\": \"template\", \"title\": \"Tracking Plan Template\", \"url\": \"/templates/tracking-plan.xlsx\"}, {\"type\": \"link\", \"title\": \"Conversion Tracking Help\", \"url\": \"https://support.google.com/google-ads/topic/1722003\"}]",
+    "last_updated_c": "2024-01-13T12:30:00Z"
+  },
+  {
+    "Id": 11,
+    "Name": "Shopping Campaigns",
+    "title_c": "Shopping Campaigns",
+    "video_links_c": "[{\"title\": \"Google Merchant Center Setup\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"22:15\"}, {\"title\": \"Product Feed Optimization\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"18:50\"}, {\"title\": \"Shopping Campaign Strategies\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"20:30\"}]",
+    "resources_c": "[{\"type\": \"pdf\", \"title\": \"Shopping Campaign Setup Guide\", \"url\": \"/resources/shopping-campaigns.pdf\"}, {\"type\": \"template\", \"title\": \"Product Feed Template\", \"url\": \"/templates/product-feed.csv\"}, {\"type\": \"link\", \"title\": \"Google Merchant Center Help\", \"url\": \"https://support.google.com/merchants\"}]",
+    "last_updated_c": "2024-01-17T16:20:00Z"
+  },
+  {
+    "Id": 12,
+    "Name": "Performance Max Campaigns",
+    "title_c": "Performance Max Campaigns",
+    "video_links_c": "[{\"title\": \"Performance Max Overview\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"16:40\"}, {\"title\": \"Asset Groups Setup\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"14:25\"}, {\"title\": \"Performance Max Optimization\", \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\", \"duration\": \"19:10\"}]",
+    "resources_c": "[{\"type\": \"pdf\", \"title\": \"Performance Max Best Practices\", \"url\": \"/resources/performance-max-guide.pdf\"}, {\"type\": \"template\", \"title\": \"Asset Planning Template\", \"url\": \"/templates/asset-planning.xlsx\"}, {\"type\": \"link\", \"title\": \"Performance Max Help\", \"url\": \"https://support.google.com/google-ads/answer/10724817\"}]",
+    "last_updated_c": "2024-01-19T11:15:00Z"
+  }
+]
