@@ -122,8 +122,8 @@ const Recommendations = () => {
     }
   };
 
-  const getUserVote = (recommendation) => {
-    return recommendation.votes.find(vote => vote.userId === currentUser.Id);
+const getUserVote = (recommendation) => {
+    return recommendation.votes?.find(vote => vote.userId === currentUser.Id);
   };
 
   const formatTimeAgo = (timestamp) => {
