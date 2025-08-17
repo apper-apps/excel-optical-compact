@@ -121,7 +121,7 @@ const Tools = () => {
             />
           </div>
 
-          {/* Category Filters */}
+{/* Category Filters */}
           <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
               <Button
