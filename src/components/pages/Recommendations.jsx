@@ -288,8 +288,8 @@ const getUserVote = (recommendation) => {
                         <Badge variant="outline">
                           {recommendation.category}
                         </Badge>
-                        <Badge variant={getStatusBadgeVariant(recommendation.status)}>
-                          {recommendation.status.replace("-", " ")}
+<Badge variant={getStatusBadgeVariant(recommendation.status)}>
+                          {recommendation.status?.replace("-", " ") || "Unknown"}
                         </Badge>
                       </div>
                     </div>
