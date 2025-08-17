@@ -1,0 +1,122 @@
+[
+  {
+    "Id": 1,
+    "Name": "Google Keyword Planner",
+    "Tags": "keyword research,google ads,ppc",
+    "description_c": "Free keyword research tool from Google that helps you discover new keywords and get search volume data for your PPC campaigns.",
+    "icon_c": "Search",
+    "category_c": "Research"
+  },
+  {
+    "Id": 2,
+    "Name": "Google Ads Editor",
+    "Tags": "campaign management,bulk editing,google ads",
+    "description_c": "Desktop application for managing Google Ads campaigns offline with bulk editing capabilities and advanced campaign management features.",
+    "icon_c": "Edit",
+    "category_c": "Management"
+  },
+  {
+    "Id": 3,
+    "Name": "Optmyzr",
+    "Tags": "automation,optimization,ppc management",
+    "description_c": "PPC management platform that automates campaign optimization with AI-powered bidding strategies and performance monitoring.",
+    "icon_c": "Zap",
+    "category_c": "Optimization"
+  },
+  {
+    "Id": 4,
+    "Name": "Unbounce",
+    "Tags": "landing pages,conversion optimization,a/b testing",
+    "description_c": "Landing page builder with drag-and-drop interface, A/B testing capabilities, and conversion optimization tools for PPC campaigns.",
+    "icon_c": "Layout",
+    "category_c": "Landing Pages"
+  },
+  {
+    "Id": 5,
+    "Name": "Google Analytics",
+    "Tags": "analytics,tracking,conversion tracking",
+    "description_c": "Web analytics platform that provides detailed insights into website traffic, user behavior, and conversion tracking for PPC campaigns.",
+    "icon_c": "BarChart3",
+    "category_c": "Analytics"
+  },
+  {
+    "Id": 6,
+    "Name": "Canva",
+    "Tags": "design,ad creatives,graphics",
+    "description_c": "Graphic design platform for creating professional ad creatives, banners, and marketing materials for PPC campaigns.",
+    "icon_c": "Palette",
+    "category_c": "Creative"
+  },
+  {
+    "Id": 7,
+    "Name": "SEMrush",
+    "Tags": "competitor analysis,keyword research,ppc intelligence",
+    "description_c": "All-in-one marketing toolkit for SEO, PPC, and competitor analysis with comprehensive keyword research and ad intelligence features.",
+    "icon_c": "TrendingUp",
+    "category_c": "Research"
+  },
+  {
+    "Id": 8,
+    "Name": "Microsoft Advertising Editor",
+    "Tags": "bing ads,campaign management,bulk operations",
+    "description_c": "Desktop application for managing Microsoft Advertising campaigns with bulk editing and offline campaign management capabilities.",
+    "icon_c": "Settings",
+    "category_c": "Management"
+  },
+  {
+    "Id": 9,
+    "Name": "WordStream Advisor",
+    "Tags": "optimization,performance monitoring,recommendations",
+    "description_c": "PPC optimization platform that provides automated recommendations, performance monitoring, and campaign improvement suggestions.",
+    "icon_c": "Target",
+    "category_c": "Optimization"
+  },
+  {
+    "Id": 10,
+    "Name": "Leadpages",
+    "Tags": "landing pages,lead generation,conversion optimization",
+    "description_c": "Landing page builder focused on lead generation with high-converting templates and integrated analytics for PPC traffic.",
+    "icon_c": "FileText",
+    "category_c": "Landing Pages"
+  },
+  {
+    "Id": 11,
+    "Name": "Hotjar",
+    "Tags": "user behavior,heatmaps,session recordings",
+    "description_c": "User behavior analytics tool that provides heatmaps, session recordings, and user feedback to optimize PPC landing pages.",
+    "icon_c": "Eye",
+    "category_c": "Analytics"
+  },
+  {
+    "Id": 12,
+    "Name": "Adobe Creative Suite",
+    "Tags": "design,professional graphics,ad creatives",
+    "description_c": "Professional design software suite including Photoshop, Illustrator, and InDesign for creating high-quality ad creatives and marketing materials.",
+    "icon_c": "Image",
+    "category_c": "Creative"
+  },
+  {
+    "Id": 13,
+    "Name": "Ahrefs",
+    "Tags": "keyword research,competitor analysis,backlink analysis",
+    "description_c": "SEO and PPC research tool with comprehensive keyword data, competitor analysis, and content gap analysis for campaign planning.",
+    "icon_c": "Link",
+    "category_c": "Research"
+  },
+  {
+    "Id": 14,
+    "Name": "Adalysis",
+    "Tags": "ad testing,optimization,performance analysis",
+    "description_c": "PPC optimization platform that automates ad testing, provides optimization recommendations, and monitors campaign performance across multiple channels.",
+    "icon_c": "Activity",
+    "category_c": "Optimization"
+  },
+  {
+    "Id": 15,
+    "Name": "Figma",
+    "Tags": "design,collaboration,ui/ux,prototyping",
+    "description_c": "Collaborative design platform for creating user interfaces, prototypes, and marketing materials with real-time collaboration features.",
+    "icon_c": "Figma",
+    "category_c": "Creative"
+  }
+]
