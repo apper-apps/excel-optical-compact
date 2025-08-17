@@ -249,9 +249,8 @@ const getUserVote = (recommendation) => {
                     >
                       <ApperIcon name="ChevronUp" className="w-5 h-5" />
                     </Button>
-                    
-                    <span className="font-semibold text-lg text-gray-900">
-                      {recommendation.upvotes - recommendation.downvotes}
+<span className="font-semibold text-lg text-gray-900">
+                      {(recommendation.upvotes_c || 0) - (recommendation.downvotes_c || 0)}
                     </span>
                     
                     <Button
