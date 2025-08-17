@@ -8,14 +8,16 @@ import Badge from "@/components/atoms/Badge";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
+import VideoUploadModal from "@/components/VideoUploadModal";
 import { learningService } from "@/services/api/learningService";
 
 const Learning = () => {
-  const [learningPages, setLearningPages] = useState([]);
+const [learningPages, setLearningPages] = useState([]);
   const [selectedPage, setSelectedPage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [isAdmin] = useState(true); // In real app, this would come from auth context
   useEffect(() => {
     loadLearningPages();
   }, []);
@@ -36,7 +38,7 @@ const Learning = () => {
     }
   };
 
-  const handlePageSelect = (page) => {
+const handlePageSelect = (page) => {
     setSelectedPage(page);
   };
 
@@ -48,6 +50,17 @@ const Learning = () => {
   const handleVideoClick = (video) => {
     toast.info("Video would open in embedded player");
     // In a real app, this would open the video in an embedded player
+  };
+
+  const handleVideoUpload = async (pageId, videoData) => {
+    try {
+      await learningService.uploadVideo(pageId, videoData);
+      await loadLearningPages(); // Refresh data
+      toast.success('Video uploaded and added to learning page successfully!');
+    } catch (error) {
+      toast.error('Failed to upload video: ' + error.message);
+      throw error;
+    }
   };
 
   if (loading) return <Loading />;
@@ -68,9 +81,21 @@ const Learning = () => {
       <div className="w-full lg:w-80 flex-shrink-0">
         <Card className="p-6 h-full">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold font-display">Learning Pages</h2>
+<h2 className="text-xl font-semibold font-display">Learning Pages</h2>
+          <div className="flex items-center space-x-3">
+            {isAdmin && (
+              <Button
+                onClick={() => setShowUploadModal(true)}
+                className="flex items-center space-x-2"
+                size="sm"
+              >
+                <ApperIcon name="Upload" className="w-4 h-4" />
+                <span>Upload Video</span>
+              </Button>
+            )}
             <ApperIcon name="GraduationCap" className="w-6 h-6 text-primary" />
           </div>
+        </div>
           
           <div className="space-y-3">
             {learningPages.map((page, index) => (
@@ -230,7 +255,16 @@ const Learning = () => {
             </p>
           </Card>
         )}
-      </div>
+</div>
+
+      {/* Video Upload Modal */}
+      <VideoUploadModal
+        isOpen={showUploadModal}
+        onClose={() => setShowUploadModal(false)}
+        learningPages={learningPages}
+        selectedPageId={selectedPage?.Id}
+        onUploadComplete={handleVideoUpload}
+      />
     </div>
   );
 };

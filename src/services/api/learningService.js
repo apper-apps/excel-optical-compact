@@ -48,7 +48,35 @@ export const learningService = {
     const pageIndex = learningPages.findIndex(page => page.Id === parseInt(id));
     if (pageIndex === -1) throw new Error("Learning page not found");
     
-    learningPages.splice(pageIndex, 1);
+learningPages.splice(pageIndex, 1);
     return true;
+  },
+
+  // Upload video to a learning page
+  uploadVideo: async (pageId, videoData) => {
+    await delay(1000); // Simulate API delay
+    
+    const pageIndex = learningPages.findIndex(page => page.Id === pageId);
+    if (pageIndex === -1) {
+      throw new Error('Learning page not found');
+    }
+
+    // Add video to the page's videoLinks array
+    if (!learningPages[pageIndex].videoLinks) {
+      learningPages[pageIndex].videoLinks = [];
+    }
+
+    const newVideo = {
+      title: videoData.title,
+      url: videoData.url,
+      duration: videoData.duration,
+      description: videoData.description || '',
+      uploadDate: videoData.uploadDate
+    };
+
+    learningPages[pageIndex].videoLinks.push(newVideo);
+    learningPages[pageIndex].lastUpdated = new Date().toISOString();
+
+    return newVideo;
   }
 };
