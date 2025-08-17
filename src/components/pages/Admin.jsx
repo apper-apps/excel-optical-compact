@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import ApperIcon from "@/components/ApperIcon";
-import Card from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
+import { toast } from "react-toastify";
 import { userService } from "@/services/api/userService";
 import { userMetricsService } from "@/services/api/userMetricsService";
 import { learningService } from "@/services/api/learningService";
 import { toolService } from "@/services/api/toolService";
-
+import ApperIcon from "@/components/ApperIcon";
+import Dashboard from "@/components/pages/Dashboard";
+import Tools from "@/components/pages/Tools";
+import Learning from "@/components/pages/Learning";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import Card from "@/components/atoms/Card";
 const Admin = () => {
-  const [users, setUsers] = useState([]);
+const [users, setUsers] = useState([]);
   const [userMetrics, setUserMetrics] = useState([]);
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -23,7 +27,14 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
-
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
+  const [newUser, setNewUser] = useState({
+    name: '',
+    email: '',
+    role: 'user'
+  });
+  const [actionLoading, setActionLoading] = useState(false);
   useEffect(() => {
     loadAdminData();
   }, []);
@@ -77,8 +88,55 @@ const Admin = () => {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+minute: '2-digit'
     });
+  };
+
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    if (!newUser.name || !newUser.email) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const createdUser = await userService.create(newUser);
+      await userService.sendInvitation(createdUser.email, createdUser.role);
+      
+      setUsers(prev => [...prev, createdUser]);
+      setNewUser({ name: '', email: '', role: 'user' });
+      setShowCreateModal(false);
+      toast.success(`User ${createdUser.name} created and invited successfully!`);
+    } catch (err) {
+      toast.error(`Failed to create user: ${err.message}`);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId) => {
+    setActionLoading(true);
+    try {
+      const deletedUser = await userService.delete(userId);
+      setUsers(prev => prev.filter(u => u.Id !== userId));
+      setShowDeleteConfirm(null);
+      toast.success(`User ${deletedUser.name} has been removed`);
+    } catch (err) {
+      toast.error(`Failed to delete user: ${err.message}`);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleRoleChange = async (userId, newRole) => {
+    try {
+      const updatedUser = await userService.update(userId, { role: newRole });
+      setUsers(prev => prev.map(u => u.Id === userId ? updatedUser : u));
+      toast.success(`User role updated to ${newRole}`);
+    } catch (err) {
+      toast.error(`Failed to update role: ${err.message}`);
+    }
   };
 
   const tabs = [
@@ -206,7 +264,7 @@ const Admin = () => {
         </motion.div>
       )}
 
-      {activeTab === "users" && (
+{activeTab === "users" && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -214,9 +272,18 @@ const Admin = () => {
           <Card className="p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-semibold font-display">Team Members</h2>
-              <Badge variant="outline">
-                {users.length} Active Users
-              </Badge>
+              <div className="flex items-center gap-3">
+                <Button 
+                  onClick={() => setShowCreateModal(true)}
+                  className="flex items-center gap-2"
+                >
+                  <ApperIcon name="Plus" className="w-4 h-4" />
+                  Create User
+                </Button>
+                <Badge variant="outline">
+                  {users.length} Active Users
+                </Badge>
+              </div>
             </div>
             
             <div className="overflow-x-auto">
@@ -227,7 +294,7 @@ const Admin = () => {
                     <th className="text-left py-3 font-medium text-gray-600">Email</th>
                     <th className="text-left py-3 font-medium text-gray-600">Role</th>
                     <th className="text-left py-3 font-medium text-gray-600">Last Active</th>
-                    <th className="text-left py-3 font-medium text-gray-600">Sheet Link</th>
+                    <th className="text-left py-3 font-medium text-gray-600">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -245,15 +312,36 @@ const Admin = () => {
                       </td>
                       <td className="py-3 text-gray-600">{user.email}</td>
                       <td className="py-3">
-                        <Badge variant={user.role === 'admin' ? 'primary' : 'outline'}>
-                          {user.role}
-                        </Badge>
+                        <select
+                          value={user.role}
+                          onChange={(e) => handleRoleChange(user.Id, e.target.value)}
+                          className="text-sm border border-gray-300 rounded px-2 py-1 focus:border-primary focus:outline-none"
+                        >
+                          <option value="user">User</option>
+                          <option value="admin">Admin</option>
+                        </select>
                       </td>
                       <td className="py-3 text-gray-600">{formatDate(user.lastActive)}</td>
                       <td className="py-3">
-                        <Button variant="ghost" size="sm">
-                          <ApperIcon name="ExternalLink" className="w-4 h-4" />
-                        </Button>
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => window.open(user.sheetLink, '_blank')}
+                          >
+                            <ApperIcon name="ExternalLink" className="w-4 h-4" />
+                          </Button>
+                          {user.Id !== 1 && ( // Don't allow deleting admin user
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => setShowDeleteConfirm(user)}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              <ApperIcon name="Trash2" className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -262,6 +350,131 @@ const Admin = () => {
             </div>
           </Card>
         </motion.div>
+      )}
+
+      {/* Create User Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg p-6 w-full max-w-md"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold font-display">Create New User</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowCreateModal(false)}
+              >
+                <ApperIcon name="X" className="w-5 h-5" />
+              </Button>
+            </div>
+            
+            <form onSubmit={handleCreateUser} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Full Name
+                </label>
+                <Input
+                  value={newUser.name}
+                  onChange={(e) => setNewUser(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Enter full name"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email Address
+                </label>
+                <Input
+                  type="email"
+                  value={newUser.email}
+                  onChange={(e) => setNewUser(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="Enter email address"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Role
+                </label>
+                <select
+                  value={newUser.role}
+                  onChange={(e) => setNewUser(prev => ({ ...prev, role: e.target.value }))}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                >
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              
+              <div className="flex gap-3 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowCreateModal(false)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={actionLoading}
+                  className="flex-1"
+                >
+                  {actionLoading ? "Creating..." : "Create & Invite"}
+                </Button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg p-6 w-full max-w-md"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                <ApperIcon name="AlertTriangle" className="w-5 h-5 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold font-display">Remove User</h3>
+                <p className="text-sm text-gray-600">This action cannot be undone</p>
+              </div>
+            </div>
+            
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to remove <strong>{showDeleteConfirm.name}</strong> from the system? 
+              They will lose access to all data and tools.
+            </p>
+            
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowDeleteConfirm(null)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => handleDeleteUser(showDeleteConfirm.Id)}
+                disabled={actionLoading}
+                className="flex-1 bg-red-600 hover:bg-red-700"
+              >
+                {actionLoading ? "Removing..." : "Remove User"}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
       )}
 
       {activeTab === "performance" && (
@@ -324,7 +537,7 @@ const Admin = () => {
             </div>
           </Card>
         </motion.div>
-      )}
+)}
     </div>
   );
 };

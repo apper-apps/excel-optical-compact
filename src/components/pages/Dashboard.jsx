@@ -1,41 +1,48 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import ApperIcon from "@/components/ApperIcon";
-import Card from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
+import { toast } from "react-toastify";
+import { userService } from "@/services/api/userService";
 import { userMetricsService } from "@/services/api/userMetricsService";
 import { messageService } from "@/services/api/messageService";
 import { winService } from "@/services/api/winService";
-
+import ApperIcon from "@/components/ApperIcon";
+import Wins from "@/components/pages/Wins";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import Card from "@/components/atoms/Card";
 const Dashboard = () => {
-  const [metrics, setMetrics] = useState([]);
+const [metrics, setMetrics] = useState([]);
   const [recentMessages, setRecentMessages] = useState([]);
   const [recentWins, setRecentWins] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
   useEffect(() => {
     loadDashboardData();
   }, []);
 
-  const loadDashboardData = async () => {
+const loadDashboardData = async () => {
     try {
       setError("");
       setLoading(true);
       
-      const [metricsData, messagesData, winsData] = await Promise.all([
+      const [metricsData, messagesData, winsData, userData] = await Promise.all([
         userMetricsService.getAll(),
-        messageService.getAll(),
-        winService.getAll()
+        messageService.getRecent(),
+        winService.getRecent(),
+        userService.getCurrentUser()
       ]);
       
-      setMetrics(metricsData);
-      setRecentMessages(messagesData.slice(-3));
-      setRecentWins(winsData.slice(0, 3));
+      setMetrics(metricsData || []);
+      setRecentMessages(messagesData || []);
+      setRecentWins(winsData || []);
+      setCurrentUser(userData);
     } catch (err) {
-      setError(err.message);
+      setError(`Failed to load dashboard data: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -52,6 +59,24 @@ const Dashboard = () => {
     return new Intl.NumberFormat('en-US').format(num);
   };
 
+  const handleDeleteAccount = async () => {
+    setActionLoading(true);
+    try {
+      await userService.delete(currentUser.Id);
+      toast.success("Account deleted successfully");
+      // In a real app, this would redirect to login
+      setShowDeleteConfirm(false);
+    } catch (err) {
+      toast.error(`Failed to delete account: ${err.message}`);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
   if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={loadDashboardData} />;
 
@@ -61,7 +86,6 @@ const Dashboard = () => {
     totalClicks: metrics.reduce((sum, m) => sum + m.clicks, 0),
     avgOptScore: Math.round(metrics.reduce((sum, m) => sum + m.optimizationScore, 0) / metrics.length)
   };
-
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -314,6 +338,105 @@ const Dashboard = () => {
             </table>
           </div>
         </Card>
+</motion.div>
+
+        {/* Account Settings Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <Card className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                  <ApperIcon name="User" className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold font-display">Account Settings</h2>
+                  <p className="text-sm text-gray-600">Manage your account preferences</p>
+                </div>
+              </div>
+            </div>
+            
+            {currentUser && (
+              <div className="space-y-4">
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-medium text-gray-900">{currentUser.name}</h3>
+                      <p className="text-sm text-gray-600">{currentUser.email}</p>
+                      <Badge variant="outline" className="mt-2">
+                        {currentUser.role}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="border-t pt-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-gray-900">Delete Account</h4>
+                      <p className="text-sm text-gray-600">Permanently remove your account and all data</p>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      onClick={() => setShowDeleteConfirm(true)}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      <ApperIcon name="Trash2" className="w-4 h-4 mr-2" />
+                      Delete Account
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </Card>
+        </motion.div>
+
+        {/* Delete Account Confirmation Modal */}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-lg p-6 w-full max-w-md"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                  <ApperIcon name="AlertTriangle" className="w-5 h-5 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold font-display">Delete Account</h3>
+                  <p className="text-sm text-gray-600">This action cannot be undone</p>
+                </div>
+              </div>
+              
+              <p className="text-gray-700 mb-6">
+                Are you sure you want to delete your account? This will permanently remove all your data, 
+                metrics, and access to the platform. You will not be able to recover this information.
+              </p>
+              
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={handleDeleteAccount}
+                  disabled={actionLoading}
+                  className="flex-1 bg-red-600 hover:bg-red-700"
+                >
+                  {actionLoading ? "Deleting..." : "Delete Account"}
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        )}
       </motion.div>
     </div>
   );
