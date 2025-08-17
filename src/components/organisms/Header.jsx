@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import ApperIcon from "@/components/ApperIcon";
 import { AuthContext } from "../../App";
 const Header = ({ title, onMenuClick }) => {
+  const authContext = useContext(AuthContext);
+  
   return (
     <header className="bg-white border-b border-gray-200 lg:pl-64">
       <div className="flex items-center justify-between h-16 px-4 sm:px-6">
@@ -20,7 +22,7 @@ const Header = ({ title, onMenuClick }) => {
 <div className="flex items-center space-x-4">
           <button 
 onClick={() => {
-              const { logout } = useContext(AuthContext) || {};
+              const { logout } = authContext || {};
               if (logout) logout();
             }}
             className="p-2 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
