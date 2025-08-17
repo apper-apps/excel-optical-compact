@@ -1,0 +1,137 @@
+[
+  {
+    "Id": 1,
+    "Name": "New Year's Day",
+    "title_c": "New Year's Day",
+    "date_c": "2024-01-01",
+    "type_c": "holiday",
+    "created_by_c": "Admin",
+    "Tags": "holiday,new-year"
+  },
+  {
+    "Id": 2,
+    "Name": "Q1 Team Meeting",
+    "title_c": "Q1 Team Meeting",
+    "date_c": "2024-01-15",
+    "type_c": "team-event",
+    "created_by_c": "Sarah Johnson",
+    "Tags": "meeting,quarterly"
+  },
+  {
+    "Id": 3,
+    "Name": "Valentine's Day",
+    "title_c": "Valentine's Day",
+    "date_c": "2024-02-14",
+    "type_c": "holiday",
+    "created_by_c": "Admin",
+    "Tags": "holiday,valentine"
+  },
+  {
+    "Id": 4,
+    "Name": "PPC Training Workshop",
+    "title_c": "PPC Training Workshop",
+    "date_c": "2024-02-20",
+    "type_c": "team-event",
+    "created_by_c": "Mike Chen",
+    "Tags": "training,ppc,workshop"
+  },
+  {
+    "Id": 5,
+    "Name": "St. Patrick's Day",
+    "title_c": "St. Patrick's Day",
+    "date_c": "2024-03-17",
+    "type_c": "holiday",
+    "created_by_c": "Admin",
+    "Tags": "holiday,irish"
+  },
+  {
+    "Id": 6,
+    "Name": "Team Building Event",
+    "title_c": "Team Building Event",
+    "date_c": "2024-03-25",
+    "type_c": "team-event",
+    "created_by_c": "Emily Rodriguez",
+    "Tags": "team-building,fun"
+  },
+  {
+    "Id": 7,
+    "Name": "Easter Sunday",
+    "title_c": "Easter Sunday",
+    "date_c": "2024-03-31",
+    "type_c": "holiday",
+    "created_by_c": "Admin",
+    "Tags": "holiday,easter"
+  },
+  {
+    "Id": 8,
+    "Name": "Q2 Planning Session",
+    "title_c": "Q2 Planning Session",
+    "date_c": "2024-04-10",
+    "type_c": "team-event",
+    "created_by_c": "David Thompson",
+    "Tags": "planning,quarterly"
+  },
+  {
+    "Id": 9,
+    "Name": "Memorial Day",
+    "title_c": "Memorial Day",
+    "date_c": "2024-05-27",
+    "type_c": "holiday",
+    "created_by_c": "Admin",
+    "Tags": "holiday,memorial"
+  },
+  {
+    "Id": 10,
+    "Name": "Mid-Year Review",
+    "title_c": "Mid-Year Review",
+    "date_c": "2024-06-15",
+    "type_c": "team-event",
+    "created_by_c": "Lisa Park",
+    "Tags": "review,performance"
+  },
+  {
+    "Id": 11,
+    "Name": "Independence Day",
+    "title_c": "Independence Day",
+    "date_c": "2024-07-04",
+    "type_c": "holiday",
+    "created_by_c": "Admin",
+    "Tags": "holiday,independence"
+  },
+  {
+    "Id": 12,
+    "Name": "Summer Team Outing",
+    "title_c": "Summer Team Outing",
+    "date_c": "2024-07-20",
+    "type_c": "team-event",
+    "created_by_c": "Alex Morgan",
+    "Tags": "outing,summer,fun"
+  },
+  {
+    "Id": 13,
+    "Name": "Labor Day",
+    "title_c": "Labor Day",
+    "date_c": "2024-09-02",
+    "type_c": "holiday",
+    "created_by_c": "Admin",
+    "Tags": "holiday,labor"
+  },
+  {
+    "Id": 14,
+    "Name": "Q3 Results Presentation",
+    "title_c": "Q3 Results Presentation",
+    "date_c": "2024-10-15",
+    "type_c": "team-event",
+    "created_by_c": "Rachel Kim",
+    "Tags": "presentation,results,quarterly"
+  },
+  {
+    "Id": 15,
+    "Name": "Thanksgiving Day",
+    "title_c": "Thanksgiving Day",
+    "date_c": "2024-11-28",
+    "type_c": "holiday",
+    "created_by_c": "Admin",
+    "Tags": "holiday,thanksgiving"
+  }
+]
