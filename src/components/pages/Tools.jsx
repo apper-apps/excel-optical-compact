@@ -150,10 +150,10 @@ const Tools = () => {
           icon="Search"
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredTools.map((tool, index) => (
             <motion.div
-              key={tool.Id}
+              key={`tool-${tool.Id || index}-${index}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
