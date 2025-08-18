@@ -183,16 +183,16 @@ const Tools = () => {
                   className="w-full mt-auto"
                   variant="outline"
                 >
-                  {requestingAccess === tool.Id ? (
-                    <>
-                      <ApperIcon name="Loader2" className="w-4 h-4 mr-2 animate-spin" />
+{requestingAccess === tool.Id ? (
+                    <div key={`loading-${tool.Id}`} className="flex items-center gap-2">
+                      <ApperIcon name="Loader2" className="w-4 h-4 animate-spin" />
                       Sending Request...
-                    </>
+                    </div>
                   ) : (
-                    <>
-                      <ApperIcon name="Mail" className="w-4 h-4 mr-2" />
+                    <div key={`request-${tool.Id}`} className="flex items-center gap-2">
+                      <ApperIcon name="Mail" className="w-4 h-4" />
                       Request Access
-                    </>
+                    </div>
                   )}
                 </Button>
               </Card>
