@@ -159,7 +159,7 @@ const Scripts = () => {
 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 {filteredScripts.map((script, index) => (
             <motion.div
-              key={script.Id || index}
+              key={script.Id ? `script-${script.Id}` : `script-index-${index}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
