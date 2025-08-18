@@ -35,7 +35,7 @@ function AppContent() {
   
   // Initialize ApperUI once when the app loads
   useEffect(() => {
-    const { ApperClient, ApperUI } = window.ApperSDK;
+const { ApperClient, ApperUI } = window.ApperSDK;
     
     const client = new ApperClient({
       apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
@@ -48,58 +48,72 @@ function AppContent() {
       clientId: import.meta.env.VITE_APPER_PROJECT_ID,
       view: 'both',
       onSuccess: function (user) {
-        setIsInitialized(true);
-        // CRITICAL: This exact currentPath logic must be preserved in all implementations
-        // DO NOT simplify or modify this pattern as it ensures proper redirection flow
-        let currentPath = window.location.pathname + window.location.search;
-        let redirectPath = new URLSearchParams(window.location.search).get('redirect');
-        const isAuthPage = currentPath.includes('/login') || currentPath.includes('/signup') || 
-                           currentPath.includes('/callback') || currentPath.includes('/error') || 
-                           currentPath.includes('/prompt-password') || currentPath.includes('/reset-password');
+        // Only proceed with navigation logic after proper initialization
+        if (!isInitialized) {
+          setIsInitialized(true);
+        }
         
-        if (user) {
-          // User is authenticated
-          if (redirectPath) {
-            navigate(redirectPath);
-          } else if (!isAuthPage) {
-            if (!currentPath.includes('/login') && !currentPath.includes('/signup')) {
-              navigate(currentPath);
+        try {
+          // CRITICAL: This exact currentPath logic must be preserved in all implementations
+          // DO NOT simplify or modify this pattern as it ensures proper redirection flow
+          let currentPath = window.location.pathname + window.location.search;
+          let redirectPath = new URLSearchParams(window.location.search).get('redirect');
+          const isAuthPage = currentPath.includes('/login') || currentPath.includes('/signup') || 
+                             currentPath.includes('/callback') || currentPath.includes('/error') || 
+                             currentPath.includes('/prompt-password') || currentPath.includes('/reset-password');
+          
+          if (user) {
+            // User is authenticated
+            if (redirectPath) {
+              navigate(redirectPath);
+            } else if (!isAuthPage) {
+              if (!currentPath.includes('/login') && !currentPath.includes('/signup')) {
+                navigate(currentPath);
+              } else {
+                navigate('/');
+              }
             } else {
               navigate('/');
             }
+            // Store user information in Redux
+            dispatch(setUser(JSON.parse(JSON.stringify(user))));
           } else {
-            navigate('/');
-          }
-          // Store user information in Redux
-          dispatch(setUser(JSON.parse(JSON.stringify(user))));
-        } else {
-          // User is not authenticated
-          if (!isAuthPage) {
-            navigate(
-              currentPath.includes('/signup')
-                ? `/signup?redirect=${currentPath}`
-                : currentPath.includes('/login')
-                ? `/login?redirect=${currentPath}`
-                : '/login'
-            );
-          } else if (redirectPath) {
-            if (
-              !['error', 'signup', 'login', 'callback', 'prompt-password', 'reset-password'].some((path) => currentPath.includes(path))
-            ) {
-              navigate(`/login?redirect=${redirectPath}`);
-            } else {
+            // User is not authenticated
+            if (!isAuthPage) {
+              navigate(
+                currentPath.includes('/signup')
+                  ? `/signup?redirect=${currentPath}`
+                  : currentPath.includes('/login')
+                  ? `/login?redirect=${currentPath}`
+                  : '/login'
+              );
+            } else if (redirectPath) {
+              if (
+                !['error', 'signup', 'login', 'callback', 'prompt-password', 'reset-password'].some((path) => currentPath.includes(path))
+              ) {
+                navigate(`/login?redirect=${redirectPath}`);
+              } else {
+                navigate(currentPath);
+              }
+            } else if (isAuthPage) {
               navigate(currentPath);
+            } else {
+              navigate('/login');
             }
-          } else if (isAuthPage) {
-            navigate(currentPath);
-          } else {
-            navigate('/login');
+            dispatch(clearUser());
           }
-          dispatch(clearUser());
+        } catch (error) {
+          console.error("Authentication navigation error:", error);
+          // Fallback to login page on any navigation errors
+          navigate('/login');
         }
       },
       onError: function(error) {
         console.error("Authentication failed:", error);
+        setIsInitialized(true);
+        // Navigate to error page with error message
+        const errorMessage = encodeURIComponent(error.message || 'Authentication failed');
+        navigate(`/error?message=${errorMessage}`);
       }
     });
   }, []);// No props and state should be bound

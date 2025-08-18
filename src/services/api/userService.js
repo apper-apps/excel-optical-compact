@@ -52,25 +52,50 @@ async create(userData) {
     return { ...newUser };
   },
 
-  async sendInvitation(email, role) {
+async sendInvitation(email, role) {
     await delay(500);
     
-    // Simulate email invitation process
+    // Validate email format
     const isEmailValid = email && email.includes('@');
     if (!isEmailValid) {
       throw new Error("Invalid email address");
     }
-    
-    // Simulate occasional failures (10% chance)
-    if (Math.random() < 0.1) {
-      throw new Error("Failed to send invitation email. Please try again.");
+
+    try {
+      // Initialize ApperClient for email invitation
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      // Create email invitation record in database
+      const invitationData = {
+        records: [{
+          recipient_email_c: email,
+          invitation_role_c: role,
+          sent_at_c: new Date().toISOString(),
+          status_c: 'pending',
+          invitation_type_c: 'user_invite'
+        }]
+      };
+
+      const response = await apperClient.createRecord('email_invitation_c', invitationData);
+
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to send invitation email');
+      }
+
+      return {
+        success: true,
+        message: `Invitation sent to ${email} with ${role} role`,
+        sentAt: new Date().toISOString(),
+        invitationId: response.results?.[0]?.data?.Id
+      };
+    } catch (error) {
+      console.error('Error sending email invitation:', error.message);
+      throw new Error(`Failed to send invitation email: ${error.message}`);
     }
-    
-    return {
-      success: true,
-      message: `Invitation sent to ${email} with ${role} role`,
-      sentAt: new Date().toISOString()
-    };
   },
 
 async update(id, userData) {
