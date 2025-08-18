@@ -83,13 +83,22 @@ const [users, setUsers] = useState([]);
     return new Intl.NumberFormat('en-US').format(num);
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+const formatDate = (dateString) => {
+    if (!dateString || dateString === 'undefined' || dateString === 'null') {
+      return 'Never';
+    }
+    
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date';
+    }
+    
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-minute: '2-digit'
+      minute: '2-digit'
     });
   };
 
