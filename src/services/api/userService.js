@@ -1,16 +1,28 @@
 import usersData from "@/services/mockData/users.json";
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Add lastActive dates to existing users that don't have them
-let users = usersData.map(user => ({
-  ...user,
-  name: user.user_name_c || user.Name,
-  email: user.email || `${user.user_name_c?.toLowerCase().replace(' ', '.')}@company.com`,
-  role: user.role || 'user',
-  avatar: user.avatar || user.user_name_c?.split(' ').map(n => n[0]).join('').toUpperCase(),
-  lastActive: user.lastActive || new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-  sheetLink: user.sheetLink || '#'
-}));
+// Get deleted user IDs from localStorage
+const getDeletedUserIds = () => {
+  try {
+    const deletedIds = localStorage.getItem('deletedUserIds');
+    return deletedIds ? JSON.parse(deletedIds) : [];
+  } catch (error) {
+    return [];
+  }
+};
+
+// Filter out deleted users and add lastActive dates to existing users
+let users = usersData
+  .filter(user => !getDeletedUserIds().includes(user.Id))
+  .map(user => ({
+    ...user,
+    name: user.user_name_c || user.Name,
+    email: user.email || `${user.user_name_c?.toLowerCase().replace(' ', '.')}@company.com`,
+    role: user.role || 'user',
+    avatar: user.avatar || user.user_name_c?.split(' ').map(n => n[0]).join('').toUpperCase(),
+    lastActive: user.lastActive || new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+    sheetLink: user.sheetLink || '#'
+  }));
 
 export const userService = {
   async getAll() {
@@ -113,10 +125,18 @@ async update(id, userData) {
     return { ...users[userIndex] };
   },
 
-  async delete(id) {
+async delete(id) {
     await delay(300);
     const userIndex = users.findIndex(user => user.Id === parseInt(id));
     if (userIndex === -1) throw new Error("User not found");
+    
+    // Permanently track deleted user ID in localStorage
+    const deletedIds = getDeletedUserIds();
+    const userId = parseInt(id);
+    if (!deletedIds.includes(userId)) {
+      deletedIds.push(userId);
+      localStorage.setItem('deletedUserIds', JSON.stringify(deletedIds));
+    }
     
     const deletedUser = { ...users[userIndex] };
     users.splice(userIndex, 1);
