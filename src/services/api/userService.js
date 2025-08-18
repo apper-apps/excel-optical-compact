@@ -67,46 +67,97 @@ async create(userData) {
 async sendInvitation(email, role) {
     await delay(500);
     
-    // Validate email format
-    const isEmailValid = email && email.includes('@');
-    if (!isEmailValid) {
-      throw new Error("Invalid email address");
+    // Enhanced email validation for invitation system
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      throw new Error("Please provide a valid email address for the invitation");
+    }
+
+    if (!role || !['admin', 'user', 'moderator'].includes(role.toLowerCase())) {
+      throw new Error("Please specify a valid role (admin, user, or moderator) for the invitation");
     }
 
     try {
-      // Initialize ApperClient for email invitation
+      // Initialize ApperClient with enhanced error handling
       const { ApperClient } = window.ApperSDK;
+      if (!ApperClient) {
+        throw new Error("ApperSDK not available. Please refresh the page and try again.");
+      }
+
       const apperClient = new ApperClient({
         apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
         apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
       });
 
-      // Create email invitation record in database
+      // Validate environment variables
+      if (!import.meta.env.VITE_APPER_PROJECT_ID || !import.meta.env.VITE_APPER_PUBLIC_KEY) {
+        throw new Error("Authentication configuration missing. Please contact system administrator.");
+      }
+
+      // Create email invitation record in database with enhanced data
       const invitationData = {
         records: [{
-          recipient_email_c: email,
-          invitation_role_c: role,
+          recipient_email_c: email.toLowerCase().trim(),
+          invitation_role_c: role.toLowerCase(),
           sent_at_c: new Date().toISOString(),
           status_c: 'pending',
-          invitation_type_c: 'user_invite'
+          invitation_type_c: 'user_invite',
+          expires_at_c: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days expiry
+          created_by_c: 'system'
         }]
       };
 
+      console.log('Sending invitation email to:', email, 'with role:', role);
       const response = await apperClient.createRecord('email_invitation_c', invitationData);
 
-      if (!response.success) {
-        throw new Error(response.message || 'Failed to send invitation email');
+      // Enhanced response validation
+      if (!response || !response.success) {
+        const errorMsg = response?.message || 'Unknown error occurred while sending invitation';
+        console.error('Invitation API error:', errorMsg);
+        throw new Error(`Failed to send invitation email: ${errorMsg}`);
       }
+
+      // Validate response data
+      const invitationId = response.results?.[0]?.data?.Id;
+      if (!invitationId) {
+        console.warn('Invitation sent but no ID returned:', response);
+      }
+
+      console.log('Invitation sent successfully:', {
+        email,
+        role,
+        invitationId,
+        sentAt: new Date().toISOString()
+      });
 
       return {
         success: true,
-        message: `Invitation sent to ${email} with ${role} role`,
+        message: `Password setup invitation sent to ${email} with ${role} role. The invitation will expire in 7 days.`,
         sentAt: new Date().toISOString(),
-        invitationId: response.results?.[0]?.data?.Id
+        invitationId: invitationId || null,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
       };
     } catch (error) {
-      console.error('Error sending email invitation:', error.message);
-      throw new Error(`Failed to send invitation email: ${error.message}`);
+      // Enhanced error logging and handling
+      const errorMessage = error.message || 'Unknown error occurred';
+      console.error('Error in sendInvitation:', {
+        email,
+        role,
+        error: errorMessage,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      });
+
+      // Provide user-friendly error messages based on error type
+      if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
+        throw new Error('Network error: Please check your internet connection and try again.');
+      } else if (errorMessage.includes('unauthorized') || errorMessage.includes('authentication')) {
+        throw new Error('Authentication error: Please log out and log back in, then try again.');
+      } else if (errorMessage.includes('already exists') || errorMessage.includes('duplicate')) {
+        throw new Error(`An invitation has already been sent to ${email}. Please check if they received it.`);
+      } else {
+        throw new Error(`Failed to send password setup invitation: ${errorMessage}`);
+      }
     }
   },
 

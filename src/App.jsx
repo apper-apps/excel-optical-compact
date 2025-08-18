@@ -107,13 +107,30 @@ const { ApperClient, ApperUI } = window.ApperSDK;
           // Fallback to login page on any navigation errors
           navigate('/login');
         }
-      },
+},
       onError: function(error) {
         console.error("Authentication failed:", error);
         setIsInitialized(true);
-        // Navigate to error page with error message
-        const errorMessage = encodeURIComponent(error.message || 'Authentication failed');
-        navigate(`/error?message=${errorMessage}`);
+        
+        // Enhanced error handling for password-related authentication issues
+        let errorMessage = 'Authentication failed';
+        
+        if (error.message) {
+          if (error.message.includes('password') || error.message.includes('reset') || error.message.includes('invite')) {
+            errorMessage = `Password authentication issue: ${error.message}`;
+          } else if (error.message.includes('email') || error.message.includes('invitation')) {
+            errorMessage = `Email verification issue: ${error.message}`;
+          } else {
+            errorMessage = error.message;
+          }
+        }
+        
+        // Navigate to error page with enhanced error message
+        const encodedErrorMessage = encodeURIComponent(errorMessage);
+        navigate(`/error?message=${encodedErrorMessage}`);
+        
+        // Clear any existing user state on authentication errors
+        dispatch(clearUser());
       }
     });
   }, []);// No props and state should be bound
