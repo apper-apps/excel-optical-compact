@@ -237,30 +237,35 @@ const totalMetrics = {
             }}>
             <Card className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold font-display">Recent Messages</h2>
-                    <Button variant="ghost" size="sm">View All
-                                        <ApperIcon name="ArrowRight" className="w-4 h-4 ml-2" />
+<h2 className="text-xl font-semibold font-display">Recent Messages</h2>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => window.location.href = '/community'}
+                    >
+                      View All
+                      <ApperIcon name="ArrowRight" className="w-4 h-4 ml-2" />
                     </Button>
                 </div>
                 <div className="space-y-4">
-{recentMessages.map(message => <div key={message.Id} className="flex items-start space-x-3">
+{recentMessages.map(message => <div key={message.Id} className="flex items-start space-x-3 p-3 bg-white rounded-lg border hover:shadow-sm transition-shadow">
                         <div
                             className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
                             <span className="text-white text-xs font-semibold">
-                                {message.user_avatar_c}
+                                {message.user_avatar_c || message.userAvatar}
                             </span>
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2">
                                 <p className="text-sm font-medium text-gray-900">
-                                    {message.user_name_c}
+                                    {message.user_name_c || message.userName}
                                 </p>
                                 <p className="text-xs text-gray-500">
-                                    {new Date(message.timestamp_c).toLocaleDateString()}
+                                    {new Date(message.timestamp_c || message.timestamp).toLocaleDateString()}
                                 </p>
                             </div>
-                            <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                                {message.content_c}
+                            <p className="text-sm text-gray-700 mt-1 line-clamp-2 whitespace-pre-wrap">
+                                {message.content_c || message.content}
                             </p>
                         </div>
                     </div>)}

@@ -9,6 +9,7 @@ import ApperIcon from "@/components/ApperIcon";
 import Dashboard from "@/components/pages/Dashboard";
 import Tools from "@/components/pages/Tools";
 import Learning from "@/components/pages/Learning";
+import Settings from "@/components/pages/Settings";
 import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
 import Input from "@/components/atoms/Input";
@@ -139,16 +140,17 @@ minute: '2-digit'
     }
   };
 
-  const tabs = [
+const tabs = [
     { id: "overview", label: "Overview", icon: "BarChart3" },
     { id: "users", label: "Users", icon: "Users" },
-    { id: "performance", label: "Performance", icon: "TrendingUp" }
+    { id: "performance", label: "Performance", icon: "TrendingUp" },
+    { id: "settings", label: "Settings", icon: "User" }
   ];
 
   if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={loadAdminData} />;
 
-  return (
+return (
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-6 text-white">
@@ -159,7 +161,7 @@ minute: '2-digit'
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold mb-2 font-display">Admin Dashboard</h1>
-              <p className="text-gray-300">Manage team content and monitor activity</p>
+              <p className="text-gray-300">Manage team content, users, and system settings</p>
             </div>
             <div className="hidden md:block">
               <ApperIcon name="Settings" size={48} className="text-gray-400" />
@@ -264,7 +266,7 @@ minute: '2-digit'
         </motion.div>
       )}
 
-{activeTab === "users" && (
+      {activeTab === "users" && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -537,8 +539,18 @@ minute: '2-digit'
             </div>
           </Card>
         </motion.div>
-)}
-    </div>
+      )}
+
+      {/* Settings Tab */}
+      {activeTab === "settings" && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Settings />
+        </motion.div>
+      )}
+</div>
   );
 };
 
