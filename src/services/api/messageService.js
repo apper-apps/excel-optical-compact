@@ -11,7 +11,7 @@ export const messageService = {
       });
 
       const params = {
-        fields: [
+fields: [
           { field: { Name: "Name" } },
           { field: { Name: "user_name_c" } },
           { field: { Name: "user_avatar_c" } },
@@ -19,7 +19,8 @@ export const messageService = {
           { field: { Name: "attachments_c" } },
           { field: { Name: "timestamp_c" } },
           { field: { Name: "reactions_c" } },
-          { field: { Name: "user_id_c" } }
+          { field: { Name: "user_id_c" } },
+          { field: { Name: "is_edited_c" } }
         ],
         orderBy: [
           { fieldName: "timestamp_c", sorttype: "ASC" }
@@ -114,7 +115,7 @@ export const messageService = {
       });
 
       const params = {
-        records: [{
+records: [{
           Name: messageData.content_c?.substring(0, 50) || "Message",
           user_name_c: messageData.user_name_c,
           user_avatar_c: messageData.user_avatar_c,
@@ -122,7 +123,8 @@ export const messageService = {
           attachments_c: messageData.attachments_c ? JSON.stringify(messageData.attachments_c) : "",
           timestamp_c: new Date().toISOString(),
           reactions_c: "",
-          user_id_c: messageData.user_id_c
+          user_id_c: messageData.user_id_c,
+          is_edited_c: false
         }]
       };
 
@@ -164,9 +166,10 @@ export const messageService = {
       });
 
       const params = {
-        records: [{
+records: [{
           Id: parseInt(messageId),
-          ...updateData
+          ...updateData,
+          is_edited_c: true
         }]
       };
 

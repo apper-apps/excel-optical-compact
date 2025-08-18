@@ -249,8 +249,11 @@ const formatTime = (timestamp) => {
 <div className="flex-1 min-w-0 group">
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center space-x-2">
-                      <span className="font-semibold text-gray-900">{message.user_name_c || message.userName}</span>
-                      <span className="text-xs text-gray-500">{formatTime(message.timestamp_c || message.timestamp)}</span>
+<span className="font-semibold text-gray-900">{message.user_name_c || message.userName}</span>
+                      <span className="text-xs text-gray-500">
+                        {formatTime(message.timestamp_c || message.timestamp)}
+                        {(message.is_edited_c) && <span className="ml-1 text-gray-400">(edited)</span>}
+                      </span>
                     </div>
                     
                     {/* Edit/Delete buttons - only show for message author */}
