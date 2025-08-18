@@ -33,7 +33,26 @@ export const messageService = {
         return [];
       }
 
-      return response.data || [];
+// Transform response data to match UI expectations
+      const transformedData = (response.data || []).map(msg => ({
+        ...msg,
+        // Ensure consistent field names for UI compatibility
+        userName: msg.user_name_c || msg.userName,
+        userAvatar: msg.user_avatar_c || msg.userAvatar,
+        content: msg.content_c || msg.content,
+        timestamp: msg.timestamp_c || msg.timestamp,
+        userId: msg.user_id_c || msg.userId,
+        // Parse reactions if they exist
+        reactions: msg.reactions_c ? (() => {
+          try {
+            return JSON.parse(msg.reactions_c);
+          } catch (e) {
+            return [];
+          }
+        })() : (msg.reactions || [])
+      }));
+      
+      return transformedData;
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error fetching messages:", error?.response?.data?.message);
@@ -123,7 +142,93 @@ export const messageService = {
         }
         
         return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+}
+      return null;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating message:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
       }
+      throw error;
+    }
+  },
+
+  async update(messageId, updateData) {
+    await delay(300);
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        records: [{
+          Id: parseInt(messageId),
+          ...updateData
+        }]
+      };
+
+      const response = await apperClient.updateRecord('message_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to update message ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+        }
+        
+        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+      }
+      return null;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating message:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
+    }
+  },
+
+  async delete(messageId) {
+    await delay(300);
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        RecordIds: [parseInt(messageId)]
+      };
+
+      const response = await apperClient.deleteRecord('message_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successfulDeletions = response.results.filter(result => result.success);
+        const failedDeletions = response.results.filter(result => !result.success);
+        
+        if (failedDeletions.length > 0) {
+          console.error(`Failed to delete message ${failedDeletions.length} records:${JSON.stringify(failedDeletions)}`);
+        }
+        
+        return successfulDeletions.length > 0;
+      }
+      return false;
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error creating message:", error?.response?.data?.message);
@@ -204,6 +309,6 @@ export const messageService = {
         console.error(error.message);
       }
       throw error;
-    }
+}
   }
 };

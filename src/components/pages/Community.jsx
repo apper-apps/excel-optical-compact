@@ -11,11 +11,15 @@ import Empty from "@/components/ui/Empty";
 import { messageService } from "@/services/api/messageService";
 
 const Community = () => {
-  const [messages, setMessages] = useState([]);
+const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [sending, setSending] = useState(false);
+  const [editingMessageId, setEditingMessageId] = useState(null);
+  const [editingContent, setEditingContent] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -102,8 +106,15 @@ const Community = () => {
     }
   };
 
-  const formatTime = (timestamp) => {
-    const date = new Date(timestamp);
+const formatTime = (timestamp) => {
+    // Handle both timestamp and timestamp_c field names
+    const timeValue = timestamp || message?.timestamp_c;
+    if (!timeValue) return 'Invalid date';
+    
+    const date = new Date(timeValue);
+    // Check if date is valid
+    if (isNaN(date.getTime())) return 'Invalid date';
+    
     const now = new Date();
     const isToday = date.toDateString() === now.toDateString();
     
@@ -121,6 +132,67 @@ const Community = () => {
         minute: '2-digit',
         hour12: true
       });
+    }
+  };
+
+  const handleEditMessage = (message) => {
+    setEditingMessageId(message.Id);
+    setEditingContent(message.content_c || message.content);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingContent.trim() || !editingMessageId) return;
+
+    try {
+      setIsEditing(true);
+      await messageService.update(editingMessageId, {
+        content_c: editingContent.trim()
+      });
+      
+      // Refresh messages to show updated content
+      const updatedMessages = await messageService.getAll();
+      setMessages(updatedMessages);
+      setEditingMessageId(null);
+      setEditingContent("");
+      toast.success("Message updated!");
+    } catch (err) {
+      toast.error("Failed to update message. Please try again.");
+    } finally {
+      setIsEditing(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingMessageId(null);
+    setEditingContent("");
+  };
+
+  const handleDeleteMessage = async (messageId) => {
+    if (!window.confirm("Are you sure you want to delete this message? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      await messageService.delete(messageId);
+      
+      // Remove message from local state immediately for better UX
+      setMessages(messages.filter(msg => msg.Id !== messageId));
+      toast.success("Message deleted!");
+    } catch (err) {
+      toast.error("Failed to delete message. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleEditKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSaveEdit();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      handleCancelEdit();
     }
   };
 
@@ -174,14 +246,77 @@ const Community = () => {
                   </span>
                 </div>
                 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <span className="font-semibold text-gray-900">{message.userName}</span>
-                    <span className="text-xs text-gray-500">{formatTime(message.timestamp)}</span>
+<div className="flex-1 min-w-0 group">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-semibold text-gray-900">{message.user_name_c || message.userName}</span>
+                      <span className="text-xs text-gray-500">{formatTime(message.timestamp_c || message.timestamp)}</span>
+                    </div>
+                    
+                    {/* Edit/Delete buttons - only show for message author */}
+                    {(message.user_id_c === currentUser.Id || message.userId === currentUser.Id) && (
+                      <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => handleEditMessage(message)}
+                          disabled={editingMessageId !== null || isDeleting}
+                          className="p-1 text-gray-400 hover:text-blue-600 transition-colors disabled:opacity-50"
+                          title="Edit message"
+                        >
+                          <ApperIcon name="Edit2" className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteMessage(message.Id)}
+                          disabled={editingMessageId !== null || isDeleting}
+                          className="p-1 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
+                          title="Delete message"
+                        >
+                          <ApperIcon name="Trash2" className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
                   </div>
                   
                   <div className="bg-gray-50 rounded-lg p-4 mb-3">
-                    <p className="text-gray-800 whitespace-pre-wrap">{message.content}</p>
+                    {editingMessageId === message.Id ? (
+                      <div className="space-y-2">
+                        <TextArea
+                          value={editingContent}
+                          onChange={(e) => setEditingContent(e.target.value)}
+                          onKeyPress={handleEditKeyPress}
+                          className="min-h-[80px] resize-none border-blue-300 focus:border-blue-500"
+                          placeholder="Edit your message..."
+                        />
+                        <div className="flex justify-end space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleCancelEdit}
+                            disabled={isEditing}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={handleSaveEdit}
+                            disabled={!editingContent.trim() || isEditing}
+                          >
+                            {isEditing ? (
+                              <>
+                                <ApperIcon name="Loader2" className="w-3 h-3 mr-1 animate-spin" />
+                                Saving...
+                              </>
+                            ) : (
+                              <>
+                                <ApperIcon name="Check" className="w-3 h-3 mr-1" />
+                                Save
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-gray-800 whitespace-pre-wrap">{message.content_c || message.content}</p>
+                    )}
                     
                     {message.attachments && message.attachments.length > 0 && (
                       <div className="mt-3 space-y-2">
