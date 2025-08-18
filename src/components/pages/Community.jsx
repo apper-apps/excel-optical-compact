@@ -107,8 +107,8 @@ const [messages, setMessages] = useState([]);
   };
 
 const formatTime = (timestamp) => {
-    // Handle both timestamp and timestamp_c field names
-    const timeValue = timestamp || message?.timestamp_c;
+    // Handle timestamp parameter
+    const timeValue = timestamp;
     if (!timeValue) return 'Invalid date';
     
     const date = new Date(timeValue);
