@@ -55,13 +55,6 @@ const loadWins = async () => {
     }
   };
 
-  const filterWins = () => {
-    if (selectedCategory === "all") {
-      setFilteredWins(wins);
-    } else {
-      setFilteredWins(wins.filter(win => win.category === selectedCategory));
-    }
-  };
 
 const handleAddWin = async () => {
     if (!newWin.title.trim() || !newWin.description.trim()) {
