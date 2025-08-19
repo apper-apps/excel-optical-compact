@@ -178,22 +178,14 @@ const Tools = () => {
                 </div>
 
 <Button
-                  onClick={() => handleRequestAccess(tool)}
-                  disabled={requestingAccess === tool.Id}
+                  onClick={() => window.open(tool.url_c, '_blank', 'noopener,noreferrer')}
                   className="w-full mt-auto"
-                  variant="outline"
+                  variant="default"
                 >
-                  {requestingAccess === tool.Id ? (
-                    <div className="flex items-center gap-2">
-                      <ApperIcon name="Loader2" className="w-4 h-4 animate-spin" />
-                      Sending Request...
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <ApperIcon name="Mail" className="w-4 h-4" />
-                      Request Access
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <ApperIcon name="ExternalLink" className="w-4 h-4" />
+                    Visit Tool
+                  </div>
                 </Button>
               </Card>
             </motion.div>
