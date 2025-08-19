@@ -8,10 +8,10 @@ import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
 import Button from "@/components/atoms/Button";
+import Button from "@/components/atoms/Button";
 import Card from "@/components/atoms/Card";
 import TextArea from "@/components/atoms/TextArea";
 const Community = () => {
-  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -89,20 +89,16 @@ const loadMessages = async () => {
     } catch (err) {
       console.error("Error sending message:", err);
       toast.error("Failed to send message. Please try again.");
-    } finally {
-      setSending(false);
-    }
-  };
-const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+} finally {
+setSending(false);
+}
+};
 const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
   };
-
   const handleReaction = async (messageId, emoji) => {
     try {
       const message = messages.find(m => m.Id === messageId);
@@ -243,14 +239,8 @@ const formatTime = (timestamp) => {
 
   if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={loadMessages} />;
-
-  const commonEmojis = ["👍", "❤️", "😂", "🎉", "🚀", "💡", "🔥", "👏"];
-
-  if (loading) return <Loading />;
-  if (error) return <Error message={error} onRetry={loadMessages} />;
-
 return (
-    <div className="max-w-4xl mx-auto space-y-6">
+<div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-secondary to-green-600 rounded-xl p-6 text-white">
         <motion.div
@@ -406,11 +396,8 @@ return (
             ))
           )}
           <div ref={messagesEndRef} />
-        </div>
-
+<div ref={messagesEndRef} />
 </div>
-
-        {/* Message Input */}
         <div className="border-t border-gray-200 p-6">
           <div className="flex space-x-4">
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center flex-shrink-0">
