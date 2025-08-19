@@ -28,40 +28,9 @@ const loadLearningPages = async () => {
       setLoading(true);
       const data = await learningService.getAll();
       
-      // Filter out learning pages with invalid dates
-      const validPages = data.filter(page => {
-        if (!page.last_updated_c) return false;
-        
-        try {
-          const date = new Date(page.last_updated_c);
-          
-          // Check if date is valid
-          if (isNaN(date.getTime())) return false;
-          
-          // Check if date is not too far in the future (more than 1 year from now)
-          const oneYearFromNow = new Date();
-          oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
-          if (date > oneYearFromNow) return false;
-          
-          // Check if date is not too far in the past (before 2020)
-          const minDate = new Date('2020-01-01');
-          if (date < minDate) return false;
-          
-          return true;
-        } catch (e) {
-          return false;
-        }
-      });
-      
-      // Show notification if any pages were filtered out
-      const removedCount = data.length - validPages.length;
-      if (removedCount > 0) {
-        toast.info(`Removed ${removedCount} learning resource${removedCount > 1 ? 's' : ''} with invalid dates`);
-      }
-      
-      setLearningPages(validPages);
-      if (validPages.length > 0) {
-        setSelectedPage(validPages[0]);
+setLearningPages(data);
+      if (data.length > 0) {
+        setSelectedPage(data[0]);
       }
     } catch (err) {
       setError(err.message);
