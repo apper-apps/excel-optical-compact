@@ -105,7 +105,7 @@ fields: [
     }
   },
 
-  async create(messageData) {
+async create(messageData) {
     await delay(400);
     try {
       const { ApperClient } = window.ApperSDK;
@@ -115,16 +115,19 @@ fields: [
       });
 
       const params = {
-records: [{
+        records: [{
           Name: messageData.content_c?.substring(0, 50) || "Message",
           user_name_c: messageData.user_name_c,
-          user_avatar_c: messageData.user_avatar_c,
+          user_avatar_c: messageData.user_avatar_c || '',
           content_c: messageData.content_c,
-          attachments_c: messageData.attachments_c ? JSON.stringify(messageData.attachments_c) : "",
+          attachments_c: Array.isArray(messageData.attachments_c) ? 
+            JSON.stringify(messageData.attachments_c) : 
+            (messageData.attachments_c || ''),
           timestamp_c: new Date().toISOString(),
-          reactions_c: "",
-          user_id_c: messageData.user_id_c,
-          is_edited_c: false
+          reactions_c: '',
+          user_id_c: parseInt(messageData.user_id_c) || 1,
+          is_edited_c: false,
+          is_deleted_c: false
         }]
       };
 
@@ -141,18 +144,27 @@ records: [{
         
         if (failedRecords.length > 0) {
           console.error(`Failed to create message ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          
+          failedRecords.forEach(record => {
+            record.errors?.forEach(error => {
+              throw new Error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) throw new Error(record.message);
+          });
         }
         
         return successfulRecords.length > 0 ? successfulRecords[0].data : null;
-}
+      }
+      
       return null;
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error creating message:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
       } else {
-        console.error(error.message);
+        console.error("Error creating message:", error.message);
+        throw error;
       }
-      throw error;
     }
   },
 
@@ -166,10 +178,9 @@ records: [{
       });
 
       const params = {
-records: [{
+        records: [{
           Id: parseInt(messageId),
-          ...updateData,
-          is_edited_c: true
+          ...updateData
         }]
       };
 
@@ -181,23 +192,32 @@ records: [{
       }
 
       if (response.results) {
-        const successfulRecords = response.results.filter(result => result.success);
-        const failedRecords = response.results.filter(result => !result.success);
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
         
-        if (failedRecords.length > 0) {
-          console.error(`Failed to update message ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update message ${failedUpdates.length} records:${JSON.stringify(failedUpdates)}`);
+          
+          failedUpdates.forEach(record => {
+            record.errors?.forEach(error => {
+              throw new Error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) throw new Error(record.message);
+          });
         }
         
-        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
       }
+      
       return null;
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error updating message:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
       } else {
-        console.error(error.message);
+        console.error("Error updating message:", error.message);
+        throw error;
       }
-      throw error;
     }
   },
 
@@ -227,19 +247,25 @@ records: [{
         
         if (failedDeletions.length > 0) {
           console.error(`Failed to delete message ${failedDeletions.length} records:${JSON.stringify(failedDeletions)}`);
+          
+          failedDeletions.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
         }
         
         return successfulDeletions.length > 0;
       }
+      
       return false;
     } catch (error) {
       if (error?.response?.data?.message) {
-        console.error("Error creating message:", error?.response?.data?.message);
+        console.error("Error deleting message:", error?.response?.data?.message);
+        throw new Error(error.response.data.message);
       } else {
-        console.error(error.message);
+        console.error("Error deleting message:", error.message);
+        throw error;
       }
-      throw error;
-    }
+}
   },
 
   async addReaction(messageId, emoji, userId, userName) {
@@ -312,6 +338,6 @@ records: [{
         console.error(error.message);
       }
       throw error;
-}
+    }
   }
 };
