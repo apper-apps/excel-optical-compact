@@ -27,13 +27,22 @@ const [users, setUsers] = useState([]);
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("overview");
+const [activeTab, setActiveTab] = useState("overview");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
+  const [showLinkModal, setShowLinkModal] = useState(false);
+  const [showEditLinkModal, setShowEditLinkModal] = useState(false);
+  const [linkToEdit, setLinkToEdit] = useState(null);
+  const [learningLinks, setLearningLinks] = useState([]);
   const [newUser, setNewUser] = useState({
     name: '',
     email: '',
     role: 'user'
+  });
+  const [newLink, setNewLink] = useState({
+    title: '',
+    description: '',
+    url: ''
   });
   const [actionLoading, setActionLoading] = useState(false);
   useEffect(() => {
@@ -45,7 +54,7 @@ const [users, setUsers] = useState([]);
       setError("");
       setLoading(true);
       
-      const [usersData, metricsData, learningData, toolsData] = await Promise.all([
+const [usersData, metricsData, learningData, toolsData] = await Promise.all([
         userService.getAll(),
         userMetricsService.getAll(),
         learningService.getAll(),
@@ -54,6 +63,7 @@ const [users, setUsers] = useState([]);
       
       setUsers(usersData);
       setUserMetrics(metricsData);
+      setLearningLinks(learningData);
       
       const avgOptScore = metricsData.length > 0 
         ? Math.round(metricsData.reduce((sum, m) => sum + m.optimizationScore, 0) / metricsData.length)
@@ -148,7 +158,82 @@ const formatDate = (dateString) => {
       toast.error(`Failed to update role: ${err.message}`);
     }
   };
+const handleCreateLink = async (e) => {
+    e.preventDefault();
+    if (!newLink.title || !newLink.url) {
+      toast.error("Please fill in title and URL");
+      return;
+    }
 
+    setActionLoading(true);
+    try {
+      const createdLink = await learningService.create({
+        title_c: newLink.title,
+        description_c: newLink.description,
+        url_c: newLink.url,
+        type_c: 'link'
+      });
+      
+      setLearningLinks(prev => [...prev, createdLink]);
+      setNewLink({ title: '', description: '', url: '' });
+      setShowLinkModal(false);
+      toast.success(`Learning hub link "${createdLink.title_c}" created successfully!`);
+    } catch (err) {
+      toast.error(`Failed to create link: ${err.message}`);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleEditLink = async (e) => {
+    e.preventDefault();
+    if (!newLink.title || !newLink.url) {
+      toast.error("Please fill in title and URL");
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const updatedLink = await learningService.update(linkToEdit.Id, {
+        title_c: newLink.title,
+        description_c: newLink.description,
+        url_c: newLink.url
+      });
+      
+      setLearningLinks(prev => prev.map(link => link.Id === linkToEdit.Id ? updatedLink : link));
+      setNewLink({ title: '', description: '', url: '' });
+      setShowEditLinkModal(false);
+      setLinkToEdit(null);
+      toast.success(`Learning hub link updated successfully!`);
+    } catch (err) {
+      toast.error(`Failed to update link: ${err.message}`);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteLink = async (linkId) => {
+    setActionLoading(true);
+    try {
+      await learningService.delete(linkId);
+      setLearningLinks(prev => prev.filter(link => link.Id !== linkId));
+      toast.success(`Learning hub link has been removed`);
+    } catch (err) {
+      toast.error(`Failed to delete link: ${err.message}`);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const openEditModal = (link) => {
+    setLinkToEdit(link);
+    setNewLink({
+      title: link.title_c || '',
+      description: link.description_c || '',
+      url: link.url_c || ''
+    });
+    setShowEditLinkModal(true);
+  };
 const tabs = [
     { id: "overview", label: "Overview", icon: "BarChart3" },
     { id: "users", label: "Users", icon: "Users" },
@@ -258,9 +343,13 @@ return (
           <Card className="p-6">
             <h2 className="text-lg font-semibold mb-4 font-display">Quick Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
+<Button 
+                variant="outline" 
+                className="h-auto p-4 flex flex-col items-center space-y-2"
+                onClick={() => setShowLinkModal(true)}
+              >
                 <ApperIcon name="Plus" className="w-6 h-6 text-primary" />
-                <span>Add Learning Page</span>
+                <span>Add Learning Hub Link</span>
               </Button>
               <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
                 <ApperIcon name="Tool" className="w-6 h-6 text-secondary" />
@@ -548,6 +637,224 @@ return (
             </div>
           </Card>
         </motion.div>
+)}
+
+      {/* Learning Hub Links Section */}
+      {activeTab === "overview" && learningLinks.length > 0 && (
+        <Card className="p-6">
+          <h2 className="text-lg font-semibold mb-4 font-display">Learning Hub Links</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-3 font-medium text-gray-600">Title</th>
+                  <th className="text-left py-3 font-medium text-gray-600">Description</th>
+                  <th className="text-left py-3 font-medium text-gray-600">URL</th>
+                  <th className="text-left py-3 font-medium text-gray-600">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {learningLinks.map((link) => (
+                  <tr key={link.Id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <td className="py-3 font-medium text-gray-900">{link.title_c}</td>
+                    <td className="py-3 text-gray-600 max-w-xs truncate">{link.description_c || 'No description'}</td>
+                    <td className="py-3">
+                      <a 
+                        href={link.url_c} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline max-w-xs truncate block"
+                      >
+                        {link.url_c}
+                      </a>
+                    </td>
+                    <td className="py-3">
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => openEditModal(link)}
+                        >
+                          <ApperIcon name="Edit" className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleDeleteLink(link.Id)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <ApperIcon name="Trash2" className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
+
+      {/* Add Learning Hub Link Modal */}
+      {showLinkModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg p-6 w-full max-w-md"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold font-display">Add Learning Hub Link</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowLinkModal(false)}
+              >
+                <ApperIcon name="X" className="w-5 h-5" />
+              </Button>
+            </div>
+            
+            <form onSubmit={handleCreateLink} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Link Title
+                </label>
+                <Input
+                  value={newLink.title}
+                  onChange={(e) => setNewLink(prev => ({ ...prev, title: e.target.value }))}
+                  placeholder="Enter link title"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description (Optional)
+                </label>
+                <Input
+                  value={newLink.description}
+                  onChange={(e) => setNewLink(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="Enter description"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  URL
+                </label>
+                <Input
+                  type="url"
+                  value={newLink.url}
+                  onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
+                  placeholder="https://example.com"
+                  required
+                />
+              </div>
+              
+              <div className="flex gap-3 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowLinkModal(false)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={actionLoading}
+                  className="flex-1"
+                >
+                  {actionLoading ? "Adding..." : "Add Link"}
+                </Button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Edit Learning Hub Link Modal */}
+      {showEditLinkModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg p-6 w-full max-w-md"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold font-display">Edit Learning Hub Link</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setShowEditLinkModal(false);
+                  setLinkToEdit(null);
+                }}
+              >
+                <ApperIcon name="X" className="w-5 h-5" />
+              </Button>
+            </div>
+            
+            <form onSubmit={handleEditLink} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Link Title
+                </label>
+                <Input
+                  value={newLink.title}
+                  onChange={(e) => setNewLink(prev => ({ ...prev, title: e.target.value }))}
+                  placeholder="Enter link title"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description (Optional)
+                </label>
+                <Input
+                  value={newLink.description}
+                  onChange={(e) => setNewLink(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="Enter description"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  URL
+                </label>
+                <Input
+                  type="url"
+                  value={newLink.url}
+                  onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
+                  placeholder="https://example.com"
+                  required
+                />
+              </div>
+              
+              <div className="flex gap-3 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setShowEditLinkModal(false);
+                    setLinkToEdit(null);
+                  }}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={actionLoading}
+                  className="flex-1"
+                >
+                  {actionLoading ? "Updating..." : "Update Link"}
+                </Button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
       )}
 
       {/* Settings Tab */}
