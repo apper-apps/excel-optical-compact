@@ -1,24 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
+import { winService } from "@/services/api/winService";
 import ApperIcon from "@/components/ApperIcon";
-import Card from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
-import TextArea from "@/components/atoms/TextArea";
-import Badge from "@/components/atoms/Badge";
-import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import { winService } from "@/services/api/winService";
+import Loading from "@/components/ui/Loading";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import Card from "@/components/atoms/Card";
+import TextArea from "@/components/atoms/TextArea";
 
 const Wins = () => {
-  const [wins, setWins] = useState([]);
+const [wins, setWins] = useState([]);
   const [filteredWins, setFilteredWins] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showAddWin, setShowAddWin] = useState(false);
+  const [showEditWin, setShowEditWin] = useState(false);
+  const [editingWin, setEditingWin] = useState(null);
   const [newWin, setNewWin] = useState({
     title: "",
     description: "",
@@ -26,7 +28,6 @@ const Wins = () => {
   });
   const [saving, setSaving] = useState(false);
   const [givingAward, setGivingAward] = useState(null);
-
   const currentUser = {
     Id: 1,
     name: "Nathan Garrett",
@@ -41,7 +42,7 @@ const Wins = () => {
     filterWins();
   }, [wins, selectedCategory]);
 
-  const loadWins = async () => {
+const loadWins = async () => {
     try {
       setError("");
       setLoading(true);
@@ -62,7 +63,7 @@ const Wins = () => {
     }
   };
 
-  const handleAddWin = async () => {
+const handleAddWin = async () => {
     if (!newWin.title.trim() || !newWin.description.trim()) {
       toast.error("Please fill in all fields");
       return;
@@ -84,6 +85,43 @@ const Wins = () => {
       toast.success("Win shared successfully! 🎉");
     } catch (err) {
       toast.error("Failed to share win. Please try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleEditWin = (win) => {
+    setEditingWin({
+      id: win.Id,
+      title: win.title || win.title_c,
+      description: win.description || win.description_c,
+      category: win.category || win.category_c
+    });
+    setShowEditWin(true);
+  };
+
+  const handleUpdateWin = async () => {
+    if (!editingWin.title.trim() || !editingWin.description.trim()) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    try {
+      setSaving(true);
+      const updatedWin = await winService.update(editingWin.id, {
+        title: editingWin.title,
+        description: editingWin.description,
+        category: editingWin.category
+      });
+      
+      setWins(wins.map(win => 
+        win.Id === editingWin.id ? updatedWin : win
+      ));
+      setEditingWin(null);
+      setShowEditWin(false);
+      toast.success("Win updated successfully! ✨");
+    } catch (err) {
+      toast.error("Failed to update win. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -125,6 +163,10 @@ const Wins = () => {
     };
     return emojis[type] || "👏";
   };
+const isValidDate = (timestamp) => {
+    const date = new Date(timestamp);
+    return date instanceof Date && !isNaN(date.getTime());
+  };
 
   const formatTimeAgo = (timestamp) => {
     const date = new Date(timestamp);
@@ -135,6 +177,22 @@ const Wins = () => {
     if (diffInHours < 24) return `${diffInHours}h ago`;
     if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d ago`;
     return date.toLocaleDateString();
+  };
+
+  const filterWins = () => {
+    let filtered = wins.filter(win => {
+      const timestamp = win.timestamp || win.timestamp_c;
+      return isValidDate(timestamp);
+    });
+
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter(win => {
+        const category = win.category || win.category_c;
+        return category === selectedCategory;
+      });
+    }
+
+    setFilteredWins(filtered);
   };
 
   if (loading) return <Loading />;
@@ -181,7 +239,7 @@ const Wins = () => {
             ))}
           </div>
 
-          <Button onClick={() => setShowAddWin(true)}>
+<Button onClick={() => setShowAddWin(true)}>
             <ApperIcon name="Plus" className="w-4 h-4 mr-2" />
             Share a Win
           </Button>
@@ -206,31 +264,39 @@ const Wins = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="p-6 hover:shadow-lg transition-shadow duration-200">
+<Card className="p-6 hover:shadow-lg transition-shadow duration-200">
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="text-white font-semibold">
-                      {win.userAvatar}
+                      {win.userAvatar || win.user_avatar_c || win.userName?.charAt(0) || win.user_name_c?.charAt(0)}
                     </span>
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-3">
-                        <h3 className="font-semibold text-gray-900">{win.userName}</h3>
-                        <Badge variant={win.category === 'professional' ? 'primary' : 'secondary'}>
-                          {win.category}
+                        <h3 className="font-semibold text-gray-900">{win.userName || win.user_name_c}</h3>
+                        <Badge variant={(win.category || win.category_c) === 'professional' ? 'primary' : 'secondary'}>
+                          {win.category || win.category_c}
                         </Badge>
-                        <span className="text-sm text-gray-500">{formatTimeAgo(win.timestamp)}</span>
+                        <span className="text-sm text-gray-500">{formatTimeAgo(win.timestamp || win.timestamp_c)}</span>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEditWin(win)}
+                        className="hover:bg-gray-50 text-gray-600 hover:text-gray-900"
+                      >
+                        <ApperIcon name="Edit" className="w-4 h-4" />
+                      </Button>
                     </div>
 
                     <h4 className="text-lg font-semibold text-gray-900 mb-2 font-display">
-                      {win.title}
+                      {win.title || win.title_c}
                     </h4>
                     
                     <p className="text-gray-600 mb-4 leading-relaxed">
-                      {win.description}
+                      {win.description || win.description_c}
                     </p>
 
                     {/* Awards Display */}
@@ -284,7 +350,7 @@ const Wins = () => {
       )}
 
       {/* Add Win Modal */}
-      {showAddWin && (
+{showAddWin && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -378,6 +444,108 @@ const Wins = () => {
                   )}
                 </Button>
                 <Button variant="outline" onClick={() => setShowAddWin(false)}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {showEditWin && editingWin && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setShowEditWin(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-lg p-6 w-full max-w-2xl"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold font-display">Edit Your Win ✨</h3>
+              <button
+                onClick={() => setShowEditWin(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <ApperIcon name="X" className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Category
+                </label>
+                <div className="flex space-x-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="professional"
+                      checked={editingWin.category === "professional"}
+                      onChange={(e) => setEditingWin({...editingWin, category: e.target.value})}
+                      className="mr-2"
+                    />
+                    Professional
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="personal"
+                      checked={editingWin.category === "personal"}
+                      onChange={(e) => setEditingWin({...editingWin, category: e.target.value})}
+                      className="mr-2"
+                    />
+                    Personal
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Win Title
+                </label>
+                <Input
+                  value={editingWin.title}
+                  onChange={(e) => setEditingWin({...editingWin, title: e.target.value})}
+                  placeholder="What did you achieve?"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Description
+                </label>
+                <TextArea
+                  value={editingWin.description}
+                  onChange={(e) => setEditingWin({...editingWin, description: e.target.value})}
+                  placeholder="Tell us more about your achievement..."
+                  className="min-h-[120px]"
+                />
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <Button
+                  onClick={handleUpdateWin}
+                  disabled={!editingWin.title.trim() || !editingWin.description.trim() || saving}
+                  className="flex-1"
+                >
+                  {saving ? (
+                    <>
+                      <ApperIcon name="Loader2" className="w-4 h-4 mr-2 animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    <>
+                      <ApperIcon name="Save" className="w-4 h-4 mr-2" />
+                      Update Win
+                    </>
+                  )}
+                </Button>
+                <Button variant="outline" onClick={() => setShowEditWin(false)}>
                   Cancel
                 </Button>
               </div>

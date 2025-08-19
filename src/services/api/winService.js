@@ -5,9 +5,19 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 let wins = [...winsData];
 
 export const winService = {
-  async getAll() {
+async getAll() {
     await delay(350);
-    return [...wins].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    // Filter out wins with invalid dates
+    const validWins = wins.filter(win => {
+      const timestamp = win.timestamp || win.timestamp_c;
+      const date = new Date(timestamp);
+      return date instanceof Date && !isNaN(date.getTime());
+    });
+    return [...validWins].sort((a, b) => {
+      const dateA = new Date(a.timestamp || a.timestamp_c);
+      const dateB = new Date(b.timestamp || b.timestamp_c);
+      return dateB - dateA;
+    });
   },
 
   async getById(id) {
@@ -47,6 +57,24 @@ return { ...win };
     });
     
     return { ...wins[winIndex] };
+  },
+async update(id, data) {
+    await delay(300);
+    const winIndex = wins.findIndex(win => win.Id === parseInt(id));
+    if (winIndex === -1) throw new Error("Win not found");
+    
+    const updatedWin = {
+      ...wins[winIndex],
+      title: data.title,
+      title_c: data.title,
+      description: data.description,
+      description_c: data.description,
+      category: data.category,
+      category_c: data.category
+    };
+    
+    wins[winIndex] = updatedWin;
+    return updatedWin;
   },
 
   async delete(id) {
