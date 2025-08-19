@@ -51,7 +51,12 @@ const loadMessages = async () => {
       setLoading(true);
       setError("");
       const data = await messageService.getAll();
-      setMessages(Array.isArray(data) ? data : []);
+      // Filter out messages from unknown users
+      const filteredMessages = Array.isArray(data) ? data.filter(message => {
+        const userName = message.user_name_c || message.userName;
+        return userName && userName.trim() !== '' && userName !== 'Unknown User';
+      }) : [];
+      setMessages(filteredMessages);
     } catch (err) {
       console.error("Error loading messages:", err);
       setError("Failed to load messages. Please try again.");
