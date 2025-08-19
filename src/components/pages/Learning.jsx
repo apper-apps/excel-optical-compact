@@ -28,7 +28,7 @@ const loadLearningPages = async () => {
       setLoading(true);
       const data = await learningService.getAll();
       
-setLearningPages(data);
+      setLearningPages(data);
       if (data.length > 0) {
         setSelectedPage(data[0]);
       }
@@ -36,6 +36,13 @@ setLearningPages(data);
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handle external link clicks
+  const handleLinkClick = (url) => {
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -134,7 +141,7 @@ const handlePageSelect = (page) => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1">
+<div className="flex-1">
         {selectedPage ? (
           <motion.div
             key={selectedPage.Id}
@@ -149,21 +156,72 @@ const handlePageSelect = (page) => {
                   {selectedPage.title}
                 </h1>
                 <div className="flex items-center space-x-2">
-                  <Badge variant="primary">
-                    {selectedPage.videoLinks.length} Videos
-                  </Badge>
-                  <Badge variant="secondary">
-                    {selectedPage.resources.length} Resources
-                  </Badge>
+                  {/* Show different badges based on content type */}
+                  {selectedPage.type_c === 'link' ? (
+                    <Badge variant="primary">
+                      External Link
+                    </Badge>
+                  ) : (
+                    <>
+                      <Badge variant="primary">
+                        {selectedPage.videoLinks?.length || 0} Videos
+                      </Badge>
+                      <Badge variant="secondary">
+                        {selectedPage.resources?.length || 0} Resources
+                      </Badge>
+                    </>
+                  )}
                 </div>
               </div>
-              <p className="text-gray-600">
-                Last updated: {new Date(selectedPage.lastUpdated).toLocaleDateString()}
-              </p>
+              <div className="flex items-center justify-between">
+                <p className="text-gray-600">
+                  Last updated: {new Date(selectedPage.lastUpdated).toLocaleDateString()}
+                </p>
+                {/* Visit Link button for external links */}
+                {selectedPage.type_c === 'link' && selectedPage.url && (
+                  <button
+                    onClick={() => handleLinkClick(selectedPage.url)}
+                    className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                  >
+                    <ApperIcon name="ExternalLink" className="w-4 h-4 mr-2" />
+                    Visit Link
+                  </button>
+                )}
+              </div>
             </Card>
 
-            {/* Training Videos Section */}
-            {selectedPage.videoLinks.length > 0 && (
+            {/* External Link Content */}
+            {selectedPage.type_c === 'link' && (
+              <Card className="p-6">
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                    <ApperIcon name="ExternalLink" className="w-8 h-8 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-semibold mb-2 font-display">External Learning Resource</h2>
+                    {selectedPage.description && (
+                      <p className="text-gray-600 mb-4 max-w-2xl mx-auto">
+                        {selectedPage.description}
+                      </p>
+                    )}
+                    <p className="text-sm text-gray-500 mb-6">
+                      This learning resource is hosted externally. Click the button above to visit the link.
+                    </p>
+                    {selectedPage.url && (
+                      <div className="bg-gray-50 rounded-lg p-4 border">
+                        <p className="text-xs text-gray-500 mb-1">URL:</p>
+                        <p className="text-sm font-mono text-gray-700 break-all">
+                          {selectedPage.url}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            )}
+
+            {/* Training Videos Section - Only for traditional learning pages */}
+            {selectedPage.type_c !== 'link' && selectedPage.videoLinks?.length > 0 && (
               <Card className="p-6">
                 <h2 className="text-xl font-semibold mb-4 font-display flex items-center">
                   <ApperIcon name="Play" className="w-5 h-5 mr-2 text-primary" />
@@ -206,8 +264,8 @@ const handlePageSelect = (page) => {
               </Card>
             )}
 
-            {/* Additional Resources Section */}
-            {selectedPage.resources.length > 0 && (
+            {/* Additional Resources Section - Only for traditional learning pages */}
+            {selectedPage.type_c !== 'link' && selectedPage.resources?.length > 0 && (
               <Card className="p-6">
                 <h2 className="text-xl font-semibold mb-4 font-display flex items-center">
                   <ApperIcon name="FileText" className="w-5 h-5 mr-2 text-secondary" />
@@ -244,6 +302,21 @@ const handlePageSelect = (page) => {
                 </div>
               </Card>
             )}
+
+            {/* Empty state for traditional learning pages with no content */}
+            {selectedPage.type_c !== 'link' && 
+             (!selectedPage.videoLinks || selectedPage.videoLinks.length === 0) && 
+             (!selectedPage.resources || selectedPage.resources.length === 0) && (
+              <Card className="p-12 text-center">
+                <ApperIcon name="FileText" className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h2 className="text-xl font-semibold text-gray-600 mb-2">
+                  No Content Available
+                </h2>
+                <p className="text-gray-500">
+                  This learning page doesn't have any videos or resources yet.
+                </p>
+              </Card>
+            )}
           </motion.div>
         ) : (
           <Card className="p-12 text-center">
@@ -256,7 +329,7 @@ const handlePageSelect = (page) => {
             </p>
           </Card>
         )}
-</div>
+      </div>
 
       {/* Video Upload Modal */}
       <VideoUploadModal

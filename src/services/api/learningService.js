@@ -6,6 +6,22 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const transformLearningPageData = (rawPage) => {
   const transformed = { ...rawPage };
   
+  // Handle simple link-type records from Admin panel
+  if (rawPage.type_c === 'link') {
+    // Copy basic fields for link display
+    transformed.title = rawPage.title_c || rawPage.Name || 'Untitled Link';
+    transformed.description = rawPage.description_c || rawPage.learning_hub_description_c || '';
+    transformed.url = rawPage.url_c || rawPage.learning_hub_link_c || '';
+    transformed.videoLinks = [];
+    transformed.resources = [];
+    transformed.lastUpdated = rawPage.ModifiedOn || rawPage.CreatedOn || new Date().toISOString();
+    return transformed;
+  }
+  
+  // Handle traditional learning pages with videos and resources
+  transformed.title = rawPage.title_c || rawPage.Name || 'Learning Page';
+  transformed.lastUpdated = rawPage.last_updated_c || rawPage.ModifiedOn || rawPage.CreatedOn || new Date().toISOString();
+  
   // Parse video_links_c JSON string to videoLinks array
   if (rawPage.video_links_c) {
     try {
