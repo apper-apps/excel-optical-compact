@@ -8,10 +8,10 @@ import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
 import Button from "@/components/atoms/Button";
-import Button from "@/components/atoms/Button";
 import Card from "@/components/atoms/Card";
 import TextArea from "@/components/atoms/TextArea";
 const Community = () => {
+const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -395,7 +395,6 @@ return (
               </motion.div>
             ))
           )}
-          <div ref={messagesEndRef} />
 <div ref={messagesEndRef} />
 </div>
         <div className="border-t border-gray-200 p-6">
