@@ -177,19 +177,19 @@ const Tools = () => {
                   </p>
                 </div>
 
-                <Button
+<Button
                   onClick={() => handleRequestAccess(tool)}
                   disabled={requestingAccess === tool.Id}
                   className="w-full mt-auto"
                   variant="outline"
                 >
-{requestingAccess === tool.Id ? (
-                    <div key={`loading-${tool.Id}`} className="flex items-center gap-2">
+                  {requestingAccess === tool.Id ? (
+                    <div className="flex items-center gap-2">
                       <ApperIcon name="Loader2" className="w-4 h-4 animate-spin" />
                       Sending Request...
                     </div>
                   ) : (
-                    <div key={`request-${tool.Id}`} className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
                       <ApperIcon name="Mail" className="w-4 h-4" />
                       Request Access
                     </div>
