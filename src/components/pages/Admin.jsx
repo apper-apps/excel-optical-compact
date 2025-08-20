@@ -412,9 +412,13 @@ return (
                 <ApperIcon name="Wrench" className="w-6 h-6 text-secondary" />
                 <span>Add Tool</span>
               </Button>
-              <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
-                <ApperIcon name="Code" className="w-6 h-6 text-warning" />
-                <span>Add Script</span>
+<Button 
+                variant="outline" 
+                className="h-auto p-4 flex flex-col items-center space-y-2"
+                onClick={() => setShowCreateModal(true)}
+              >
+                <ApperIcon name="UserPlus" className="w-6 h-6 text-accent" />
+                <span>Add User</span>
               </Button>
             </div>
           </Card>

@@ -2,7 +2,7 @@
   {
     "Id": 1,
     "Name": "Automated Bid Management",
-    "link_c": "https://script.google.com/d/1ABC123/edit",
+    "link_c": "https://script.google.com/d/1ABC123DEF456GHI789/edit",
     "category_c": "Bidding",
     "description_c": "Automatically adjusts keyword bids based on performance metrics and target CPA goals. Monitors conversion data and increases bids for high-performing keywords while reducing bids for underperformers.",
     "Tags": "automation,bidding,cpa,performance"
@@ -10,7 +10,7 @@
   {
     "Id": 2,
     "Name": "Campaign Performance Monitor",
-    "link_c": "https://script.google.com/d/1DEF456/edit",
+    "link_c": "https://script.google.com/d/1DEF456GHI789JKL012/edit",
     "category_c": "Monitoring",
     "description_c": "Sends daily email alerts for campaigns with significant performance changes. Tracks metrics like CTR, conversion rate, and cost changes to identify issues early.",
     "Tags": "monitoring,alerts,performance,email"
@@ -18,7 +18,7 @@
   {
     "Id": 3,
     "Name": "Ad Copy A/B Testing",
-    "link_c": "https://script.google.com/d/1GHI789/edit",
+    "link_c": "https://script.google.com/d/1GHI789JKL012MNO345/edit",
     "category_c": "Testing",
     "description_c": "Automates the creation and management of ad copy tests. Rotates ad variations, measures statistical significance, and pauses underperforming ads automatically.",
     "Tags": "testing,ad-copy,ab-testing,optimization"
@@ -26,7 +26,7 @@
   {
     "Id": 4,
     "Name": "Budget Allocation Optimizer",
-    "link_c": "https://script.google.com/d/1JKL012/edit",
+    "link_c": "https://script.google.com/d/1JKL012MNO345PQR678/edit",
     "category_c": "Budget Management",
     "description_c": "Redistributes budget between campaigns based on performance and remaining monthly budget. Ensures high-performing campaigns don't run out of budget while limiting spend on poor performers.",
     "Tags": "budget,allocation,optimization,performance"
@@ -34,7 +34,7 @@
   {
     "Id": 5,
     "Name": "Keyword Bid Optimization",
-    "link_c": "https://script.google.com/d/1MNO345/edit",
+    "link_c": "https://script.google.com/d/1MNO345PQR678STU901/edit",
     "category_c": "Optimization",
     "description_c": "Advanced keyword bid optimization using machine learning principles. Analyzes historical performance, seasonality, and competitor activity to set optimal bids for maximum ROI.",
     "Tags": "keywords,optimization,machine-learning,roi"
@@ -42,7 +42,7 @@
   {
     "Id": 6,
     "Name": "Competitor Research Automation",
-    "link_c": "https://script.google.com/d/1PQR678/edit",
+    "link_c": "https://script.google.com/d/1PQR678STU901VWX234/edit",
     "category_c": "Research",
     "description_c": "Automates competitive research by analyzing auction insights and search impression share data. Generates reports on competitor activity and market opportunities.",
     "Tags": "research,competitors,auction-insights,market-analysis"
@@ -50,7 +50,7 @@
   {
     "Id": 7,
     "Name": "Quality Score Tracker",
-    "link_c": "https://script.google.com/d/1STU901/edit",
+    "link_c": "https://script.google.com/d/1STU901VWX234YZA567/edit",
     "category_c": "Quality Assurance",
     "description_c": "Monitors keyword quality scores and provides recommendations for improvement. Tracks changes over time and alerts when quality scores drop significantly.",
     "Tags": "quality-score,monitoring,keywords,recommendations"
@@ -58,7 +58,7 @@
   {
     "Id": 8,
     "Name": "Negative Keyword Harvesting",
-    "link_c": "https://script.google.com/d/1VWX234/edit",
+    "link_c": "https://script.google.com/d/1VWX234YZA567BCD890/edit",
     "category_c": "Optimization",
     "description_c": "Automatically identifies and adds negative keywords based on search term reports. Helps reduce wasted spend on irrelevant traffic and improves campaign efficiency.",
     "Tags": "negative-keywords,optimization,search-terms,efficiency"
@@ -66,7 +66,7 @@
   {
     "Id": 9,
     "Name": "Landing Page Monitor",
-    "link_c": "https://script.google.com/d/1YZA567/edit",
+    "link_c": "https://script.google.com/d/1YZA567BCD890EFG123/edit",
     "category_c": "Quality Assurance",
     "description_c": "Regularly checks landing page URLs for availability and load times. Pauses ads with broken landing pages and sends alerts to prevent wasted ad spend.",
     "Tags": "landing-pages,monitoring,quality-assurance,uptime"
@@ -74,7 +74,7 @@
   {
     "Id": 10,
     "Name": "Dayparting Automation",
-    "link_c": "https://script.google.com/d/1BCD890/edit",
+    "link_c": "https://script.google.com/d/1BCD890EFG123HIJ456/edit",
     "category_c": "Bidding",
     "description_c": "Automatically adjusts ad schedules and bid modifiers based on historical performance data. Optimizes campaigns to show ads during the most profitable hours and days.",
     "Tags": "dayparting,scheduling,bid-modifiers,timing"
@@ -82,7 +82,7 @@
   {
     "Id": 11,
     "Name": "Account Health Checker",
-    "link_c": "https://script.google.com/d/1EFG123/edit",
+    "link_c": "https://script.google.com/d/1EFG123HIJ456KLM789/edit",
     "category_c": "Monitoring",
     "description_c": "Comprehensive account audit script that checks for common issues like duplicate keywords, missing extensions, low-quality ads, and budget constraints. Generates detailed health reports.",
     "Tags": "audit,health-check,account-optimization,reporting"
@@ -90,7 +90,7 @@
   {
     "Id": 12,
     "Name": "Conversion Tracking Validator",
-    "link_c": "https://script.google.com/d/1HIJ456/edit",
+    "link_c": "https://script.google.com/d/1HIJ456KLM789NOP012/edit",
     "category_c": "Quality Assurance",
     "description_c": "Validates conversion tracking setup across all campaigns. Checks for missing conversion actions, duplicate tracking, and provides recommendations for improving conversion measurement accuracy.",
     "Tags": "conversion-tracking,validation,measurement,accuracy"

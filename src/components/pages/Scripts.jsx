@@ -65,11 +65,11 @@ const categories = ["All", ...new Set(scripts.map(script => script.category))];
   
   // Add Script Modal State
   const [showAddModal, setShowAddModal] = useState(false);
-  const [scriptForm, setScriptForm] = useState({
+const [scriptForm, setScriptForm] = useState({
     name: '',
     description: '',
     category: '',
-    code: '',
+    link: '',
     tags: ''
   });
 
@@ -88,7 +88,7 @@ const categories = ["All", ...new Set(scripts.map(script => script.category))];
 
   const handleAddScript = async (e) => {
     e.preventDefault();
-    if (!scriptForm.name || !scriptForm.description || !scriptForm.category || !scriptForm.code) {
+if (!scriptForm.name || !scriptForm.description || !scriptForm.category || !scriptForm.link) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -98,15 +98,13 @@ const categories = ["All", ...new Set(scripts.map(script => script.category))];
         name: scriptForm.name,
         description: scriptForm.description,
         category: scriptForm.category,
-        code: scriptForm.code,
-        tags: scriptForm.tags,
-        author: "Current User",
-        difficulty: "Intermediate"
+link_c: scriptForm.link,
+        Tags: scriptForm.tags
       });
       
       setScripts(prev => [...prev, newScript]);
       toast.success("Script added successfully!");
-      setScriptForm({ name: '', description: '', category: '', code: '', tags: '' });
+setScriptForm({ name: '', description: '', category: '', link: '', tags: '' });
       setShowAddModal(false);
     } catch (err) {
       toast.error("Failed to add script. Please try again.");
@@ -230,14 +228,14 @@ const categories = ["All", ...new Set(scripts.map(script => script.category))];
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Script Code *
+Google Ads Script Link *
                 </label>
-                <textarea
-                  value={scriptForm.code}
-                  onChange={(e) => setScriptForm(prev => ({ ...prev, code: e.target.value }))}
-                  placeholder="Paste your Google Ads script code here..."
-                  rows="8"
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:outline-none font-mono"
+                <input
+                  type="url"
+                  value={scriptForm.link}
+                  onChange={(e) => setScriptForm(prev => ({ ...prev, link: e.target.value }))}
+                  placeholder="https://script.google.com/d/your-script-id/edit"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:outline-none"
                   required
                 />
               </div>
@@ -350,9 +348,9 @@ const categories = ["All", ...new Set(scripts.map(script => script.category))];
                 </div>
 
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                  <div className="flex items-center text-sm text-gray-500">
-                    <ApperIcon name="Github" className="w-4 h-4 mr-2" />
-                    GitHub Repository
+<div className="flex items-center text-sm text-gray-500">
+                    <ApperIcon name="ExternalLink" className="w-4 h-4 mr-2" />
+                    Open Script
                   </div>
                   <Button variant="ghost" size="sm">
                     <ApperIcon name="ArrowRight" className="w-4 h-4" />

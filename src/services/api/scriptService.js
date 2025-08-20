@@ -12,7 +12,7 @@ export const scriptService = {
 
   async getById(id) {
     await delay(200);
-    const script = scripts.find(script => script.Id === parseInt(id));
+const script = scripts.find(script => script.Id === parseInt(id));
     if (!script) throw new Error("Script not found");
     return { ...script };
   },
@@ -26,7 +26,7 @@ export const scriptService = {
 
   async create(scriptData) {
     await delay(450);
-    const newId = Math.max(...scripts.map(s => s.Id)) + 1;
+const newId = scripts.length > 0 ? Math.max(...scripts.map(s => s.Id)) + 1 : 1;
     const newScript = {
       Id: newId,
       ...scriptData
@@ -37,7 +37,7 @@ export const scriptService = {
 
   async update(id, scriptData) {
     await delay(450);
-    const scriptIndex = scripts.findIndex(script => script.Id === parseInt(id));
+const scriptIndex = scripts.findIndex(script => script.Id === parseInt(id));
     if (scriptIndex === -1) throw new Error("Script not found");
     
     scripts[scriptIndex] = {
@@ -49,7 +49,7 @@ export const scriptService = {
   },
 
   async delete(id) {
-    await delay(300);
+await delay(500);
     const scriptIndex = scripts.findIndex(script => script.Id === parseInt(id));
     if (scriptIndex === -1) throw new Error("Script not found");
     
