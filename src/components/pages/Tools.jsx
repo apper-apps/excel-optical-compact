@@ -311,10 +311,9 @@ const handleVote = async (tool, voteType) => {
               <ApperIcon name="Plus" className="w-4 h-4 mr-2" />
               Suggest Tool
             </Button>
-          </div>
+</div>
         </Card>
       )}
-
       {/* Tool Suggestion Modal */}
       {showSuggestionModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
