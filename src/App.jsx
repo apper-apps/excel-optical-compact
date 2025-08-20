@@ -42,11 +42,16 @@ function AppContent() {
       apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
     });
     
-    // Initialize but don't show login yet
+// Initialize but don't show login yet
     ApperUI.setup(client, {
       target: '#authentication',
       clientId: import.meta.env.VITE_APPER_PROJECT_ID,
       view: 'both',
+      // Enable email verification with 6-digit codes and resend functionality
+      enableEmailVerification: true,
+      verificationCodeLength: 6,
+      enableResendCode: true,
+      resendCodeTimeout: 60,
       onSuccess: function (user) {
         setIsInitialized(true);
         // CRITICAL: This exact currentPath logic must be preserved in all implementations
@@ -101,6 +106,10 @@ function AppContent() {
       onError: function(error) {
         console.error("Authentication failed:", error);
         setIsInitialized(true);
+      },
+      onVerificationError: function(error) {
+        console.error("Email verification failed:", error);
+        // Handle verification-specific errors
       }
     });
   }, [navigate, dispatch]);
