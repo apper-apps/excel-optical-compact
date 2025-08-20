@@ -47,8 +47,11 @@ const { ApperClient, ApperUI } = window.ApperSDK;
       target: '#authentication',
       clientId: import.meta.env.VITE_APPER_PROJECT_ID,
       view: 'both',
+      enableEmailVerification: true,
+      requireEmailVerification: true,
       emailVerification: {
-        enableEmailVerification: true,
+        enabled: true,
+        autoSend: true,
         onSuccess: function(verificationResult) {
           console.log("Email verification successful:", verificationResult);
           
@@ -81,6 +84,8 @@ const { ApperClient, ApperUI } = window.ApperSDK;
               errorMessage = 'Invalid verification code. Please check your email and try again.';
             } else if (verificationError.message.includes('network')) {
               errorMessage = 'Network error during verification. Please check your connection and try again.';
+            } else if (verificationError.message.includes('send') || verificationError.message.includes('email')) {
+              errorMessage = 'Failed to send verification email. Please try again or contact support.';
             } else {
               errorMessage = `Email verification issue: ${verificationError.message}`;
             }
@@ -98,18 +103,59 @@ const { ApperClient, ApperUI } = window.ApperSDK;
         onResend: function(resendResult) {
           console.log("Verification email resent:", resendResult);
           
-          // Show success message for resend
-          if (window.toast) {
-            window.toast.success('Verification email resent! Please check your inbox and spam folder.');
+          // Enhanced resend handling with success/failure detection
+          if (resendResult && resendResult.success !== false) {
+            // Show success message for resend
+            if (window.toast) {
+              window.toast.success('Verification email resent! Please check your inbox and spam folder.');
+            } else {
+              alert('Verification email resent! Please check your inbox and spam folder.');
+            }
           } else {
-            alert('Verification email resent! Please check your inbox and spam folder.');
+            // Handle resend failure
+            const errorMessage = resendResult?.message || 'Failed to resend verification email. Please try again.';
+            console.error("Resend email failed:", errorMessage);
+            
+            if (window.toast) {
+              window.toast.error(errorMessage);
+            } else {
+              alert(errorMessage);
+            }
           }
           
           // Log resend for debugging
           console.log("Resend verification email result:", {
             timestamp: new Date().toISOString(),
-            result: resendResult
+            result: resendResult,
+            success: resendResult?.success !== false
           });
+        },
+        onEmailSent: function(emailResult) {
+          console.log("Verification email sent:", emailResult);
+          
+          if (emailResult && emailResult.success !== false) {
+            if (window.toast) {
+              window.toast.success('Verification email sent! Please check your inbox and spam folder.');
+            }
+          } else {
+            console.error("Email sending failed:", emailResult);
+            if (window.toast) {
+              window.toast.error('Failed to send verification email. Please try signing up again.');
+            }
+          }
+        }
+      },
+      onSignupComplete: function(signupResult) {
+        console.log("Signup completed, triggering email verification:", signupResult);
+        
+        // Ensure email verification is triggered after successful signup
+        if (signupResult && signupResult.user && signupResult.user.email) {
+          console.log("Requesting verification email for:", signupResult.user.email);
+          
+          // Show immediate feedback
+          if (window.toast) {
+            window.toast.info('Account created! Please check your email for verification instructions.');
+          }
         }
       },
       onSuccess: function (user) {
