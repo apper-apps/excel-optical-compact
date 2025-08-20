@@ -61,7 +61,17 @@ const Scripts = () => {
     toast.success(`Opening ${script.name} script`);
   };
 
-  const categories = ["All", ...new Set(scripts.map(script => script.category))];
+const categories = ["All", ...new Set(scripts.map(script => script.category))];
+  
+  // Add Script Modal State
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [scriptForm, setScriptForm] = useState({
+    name: '',
+    description: '',
+    category: '',
+    code: '',
+    tags: ''
+  });
 
   const getCategoryIcon = (category) => {
     switch (category) {
@@ -73,6 +83,33 @@ const Scripts = () => {
       case "Research": return "Search";
       case "Quality Assurance": return "CheckCircle";
       default: return "Code";
+    }
+  };
+
+  const handleAddScript = async (e) => {
+    e.preventDefault();
+    if (!scriptForm.name || !scriptForm.description || !scriptForm.category || !scriptForm.code) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      const newScript = await scriptService.create({
+        name: scriptForm.name,
+        description: scriptForm.description,
+        category: scriptForm.category,
+        code: scriptForm.code,
+        tags: scriptForm.tags,
+        author: "Current User",
+        difficulty: "Intermediate"
+      });
+      
+      setScripts(prev => [...prev, newScript]);
+      toast.success("Script added successfully!");
+      setScriptForm({ name: '', description: '', category: '', code: '', tags: '' });
+      setShowAddModal(false);
+    } catch (err) {
+      toast.error("Failed to add script. Please try again.");
     }
   };
 
@@ -100,17 +137,144 @@ const Scripts = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="flex items-center justify-between">
+<div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold mb-2 font-display">Google Ads Scripts Repository</h1>
               <p className="text-gray-300 text-lg">Ready-to-use automation scripts for Google Ads optimization</p>
             </div>
-            <div className="hidden md:block">
-              <ApperIcon name="Code" size={64} className="text-gray-400" />
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={() => setShowAddModal(true)}
+                className="bg-white/10 hover:bg-white/20 text-white border-white/20"
+                variant="outline"
+              >
+                <ApperIcon name="Plus" className="w-4 h-4 mr-2" />
+                Add Script
+              </Button>
+              <div className="hidden md:block">
+                <ApperIcon name="Code" size={64} className="text-gray-400" />
+              </div>
             </div>
           </div>
         </motion.div>
       </div>
+
+      {/* Add Script Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold font-display">Add New Script</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowAddModal(false)}
+              >
+                <ApperIcon name="X" className="w-5 h-5" />
+              </Button>
+            </div>
+            
+            <form onSubmit={handleAddScript} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Script Name *
+                </label>
+                <input
+                  type="text"
+                  value={scriptForm.name}
+                  onChange={(e) => setScriptForm(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Enter script name"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description *
+                </label>
+                <textarea
+                  value={scriptForm.description}
+                  onChange={(e) => setScriptForm(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="Describe what this script does"
+                  rows="3"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Category *
+                </label>
+                <select
+                  value={scriptForm.category}
+                  onChange={(e) => setScriptForm(prev => ({ ...prev, category: e.target.value }))}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  required
+                >
+                  <option value="">Select category</option>
+                  <option value="Bidding">Bidding</option>
+                  <option value="Monitoring">Monitoring</option>
+                  <option value="Testing">Testing</option>
+                  <option value="Budget Management">Budget Management</option>
+                  <option value="Optimization">Optimization</option>
+                  <option value="Research">Research</option>
+                  <option value="Quality Assurance">Quality Assurance</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Script Code *
+                </label>
+                <textarea
+                  value={scriptForm.code}
+                  onChange={(e) => setScriptForm(prev => ({ ...prev, code: e.target.value }))}
+                  placeholder="Paste your Google Ads script code here..."
+                  rows="8"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:outline-none font-mono"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tags
+                </label>
+                <input
+                  type="text"
+                  value={scriptForm.tags}
+                  onChange={(e) => setScriptForm(prev => ({ ...prev, tags: e.target.value }))}
+                  placeholder="automation, pmax, bidding (comma separated)"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                />
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowAddModal(false)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  className="flex-1"
+                >
+                  Add Script
+                </Button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
 
       {/* Filters */}
       <Card className="p-6">
