@@ -312,8 +312,8 @@ const handleVote = async (tool, voteType) => {
               Suggest Tool
             </Button>
 </div>
-        </Card>
-      )}
+</Card>
+      )
       {/* Tool Suggestion Modal */}
       {showSuggestionModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
