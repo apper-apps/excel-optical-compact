@@ -19,6 +19,7 @@ import Card from "@/components/atoms/Card";
 const Admin = () => {
 const [users, setUsers] = useState([]);
   const [userMetrics, setUserMetrics] = useState([]);
+  const [tools, setTools] = useState([]);
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalLearningPages: 0,
@@ -27,11 +28,12 @@ const [users, setUsers] = useState([]);
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("overview");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [showEditLinkModal, setShowEditLinkModal] = useState(false);
+  const [showToolModal, setShowToolModal] = useState(false);
   const [linkToEdit, setLinkToEdit] = useState(null);
   const [learningLinks, setLearningLinks] = useState([]);
   const [newUser, setNewUser] = useState({
@@ -44,7 +46,15 @@ const [activeTab, setActiveTab] = useState("overview");
     description: '',
     url: ''
   });
+  const [newTool, setNewTool] = useState({
+    name: '',
+    description: '',
+    url: '',
+    category: '',
+    icon: 'Tool'
+  });
   const [actionLoading, setActionLoading] = useState(false);
+
   useEffect(() => {
     loadAdminData();
   }, []);
@@ -61,9 +71,10 @@ const [usersData, metricsData, learningData, toolsData] = await Promise.all([
         toolService.getAll()
       ]);
       
-      setUsers(usersData);
+setUsers(usersData);
       setUserMetrics(metricsData);
       setLearningLinks(learningData);
+      setTools(toolsData);
       
       const avgOptScore = metricsData.length > 0 
         ? Math.round(metricsData.reduce((sum, m) => sum + m.optimizationScore, 0) / metricsData.length)
@@ -234,9 +245,51 @@ const handleCreateLink = async (e) => {
     });
     setShowEditLinkModal(true);
   };
-const tabs = [
+const handleCreateTool = async (e) => {
+    e.preventDefault();
+    if (!newTool.name || !newTool.url) {
+      toast.error("Please fill in tool name and URL");
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const createdTool = await toolService.create({
+        Name: newTool.name,
+        description_c: newTool.description,
+        url_c: newTool.url,
+        category_c: newTool.category,
+        icon_c: newTool.icon,
+        Tags: '',
+        likes: 0,
+        dislikes: 0
+      });
+      
+      setTools(prev => [...prev, createdTool]);
+      setNewTool({ name: '', description: '', url: '', category: '', icon: 'Tool' });
+      setShowToolModal(false);
+      toast.success(`Tool "${createdTool.Name}" added successfully!`);
+    } catch (err) {
+      toast.error(`Failed to create tool: ${err.message}`);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteTool = async (toolId) => {
+    try {
+      await toolService.delete(toolId);
+      setTools(prev => prev.filter(tool => tool.Id !== toolId));
+      toast.success(`Tool has been removed`);
+    } catch (err) {
+      toast.error(`Failed to delete tool: ${err.message}`);
+    }
+  };
+
+  const tabs = [
     { id: "overview", label: "Overview", icon: "BarChart3" },
     { id: "users", label: "Users", icon: "Users" },
+    { id: "tools", label: "Tools", icon: "Wrench" },
     { id: "performance", label: "Performance", icon: "TrendingUp" },
     { id: "settings", label: "Settings", icon: "User" }
   ];
@@ -351,8 +404,12 @@ return (
                 <ApperIcon name="Plus" className="w-6 h-6 text-primary" />
                 <span>Add Learning Hub Link</span>
               </Button>
-              <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
-                <ApperIcon name="Tool" className="w-6 h-6 text-secondary" />
+              <Button 
+                variant="outline" 
+                className="h-auto p-4 flex flex-col items-center space-y-2"
+                onClick={() => setShowToolModal(true)}
+              >
+                <ApperIcon name="Wrench" className="w-6 h-6 text-secondary" />
                 <span>Add Tool</span>
               </Button>
               <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
@@ -361,6 +418,182 @@ return (
               </Button>
             </div>
           </Card>
+        </motion.div>
+      )}
+
+      {/* Tools Management Tab */}
+      {activeTab === "tools" && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Card className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg font-semibold font-display">Tools Management</h2>
+              <div className="flex items-center gap-3">
+                <Button 
+                  onClick={() => setShowToolModal(true)}
+                  className="flex items-center gap-2"
+                >
+                  <ApperIcon name="Plus" className="w-4 h-4" />
+                  Add Tool
+                </Button>
+                <Badge variant="outline">
+                  {tools.length} Tools
+                </Badge>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {tools.map((tool) => (
+                <Card key={tool.Id} className="p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary/10 to-primary/20 rounded-lg flex items-center justify-center">
+                      <ApperIcon name={tool.icon_c || "Tool"} className="w-5 h-5 text-primary" />
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {tool.category_c}
+                    </Badge>
+                  </div>
+                  
+                  <h3 className="font-semibold text-gray-900 mb-2">{tool.Name}</h3>
+                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{tool.description_c}</p>
+                  
+                  <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                    <span className="flex items-center gap-1">
+                      <ApperIcon name="ThumbsUp" className="w-3 h-3 text-green-600" />
+                      {tool.likes || 0}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <ApperIcon name="ThumbsDown" className="w-3 h-3 text-red-600" />
+                      {tool.dislikes || 0}
+                    </span>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => window.open(tool.url_c, '_blank')}
+                      className="flex-1"
+                    >
+                      <ApperIcon name="ExternalLink" className="w-3 h-3 mr-1" />
+                      Visit
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => handleDeleteTool(tool.Id)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <ApperIcon name="Trash2" className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Add Tool Modal */}
+      {showToolModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg p-6 w-full max-w-md"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold font-display">Add New Tool</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowToolModal(false)}
+              >
+                <ApperIcon name="X" className="w-5 h-5" />
+              </Button>
+            </div>
+            
+            <form onSubmit={handleCreateTool} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tool Name *
+                </label>
+                <Input
+                  value={newTool.name}
+                  onChange={(e) => setNewTool(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Enter tool name"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <textarea
+                  value={newTool.description}
+                  onChange={(e) => setNewTool(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="Describe what this tool does"
+                  rows="3"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Website URL *
+                </label>
+                <Input
+                  type="url"
+                  value={newTool.url}
+                  onChange={(e) => setNewTool(prev => ({ ...prev, url: e.target.value }))}
+                  placeholder="https://example.com"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Category
+                </label>
+                <select
+                  value={newTool.category}
+                  onChange={(e) => setNewTool(prev => ({ ...prev, category: e.target.value }))}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                >
+                  <option value="">Select category</option>
+                  <option value="Research">Research</option>
+                  <option value="Analytics">Analytics</option>
+                  <option value="Advertising Platform">Advertising Platform</option>
+                  <option value="Social Advertising">Social Advertising</option>
+                  <option value="Optimization">Optimization</option>
+                  <option value="Creative">Creative</option>
+                </select>
+              </div>
+              
+              <div className="flex gap-3 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowToolModal(false)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={actionLoading}
+                  className="flex-1"
+                >
+                  {actionLoading ? "Adding..." : "Add Tool"}
+                </Button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
         </motion.div>
       )}
 
@@ -858,7 +1091,7 @@ return (
       )}
 
       {/* Settings Tab */}
-      {activeTab === "settings" && (
+{activeTab === "settings" && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -866,7 +1099,7 @@ return (
           <Settings />
         </motion.div>
       )}
-</div>
+    </div>
   );
 };
 

@@ -6,7 +6,9 @@
     "description_c": "Google's free data visualization platform for creating comprehensive PPC reports and dashboards. Connect data from Google Ads, Analytics, and other sources to build automated reporting solutions.",
     "icon_c": "BarChart3",
     "category_c": "Analytics",
-    "url_c": "https://lookerstudio.google.com/"
+    "url_c": "https://lookerstudio.google.com/",
+    "likes": 24,
+    "dislikes": 3
   },
   {
     "Id": 2,
@@ -15,7 +17,9 @@
     "description_c": "All-in-one digital marketing toolkit with powerful PPC features including competitor ad analysis, keyword research, and campaign optimization insights across Google Ads and social platforms.",
     "icon_c": "TrendingUp",
     "category_c": "Research",
-    "url_c": "https://www.semrush.com/"
+    "url_c": "https://www.semrush.com/",
+    "likes": 31,
+    "dislikes": 5
   },
   {
     "Id": 3,
@@ -24,7 +28,9 @@
     "description_c": "Google's primary advertising platform for creating and managing search, display, video, and shopping campaigns. Essential tool for reaching customers across Google's network.",
     "icon_c": "Search",
     "category_c": "Advertising Platform",
-    "url_c": "https://ads.google.com/"
+    "url_c": "https://ads.google.com/",
+    "likes": 42,
+    "dislikes": 7
   },
   {
     "Id": 4,
@@ -33,7 +39,9 @@
     "description_c": "Meta's comprehensive advertising platform for creating and managing campaigns across Facebook, Instagram, and Audience Network. Advanced targeting and creative tools for social media advertising.",
     "icon_c": "Facebook",
     "category_c": "Social Advertising",
-    "url_c": "https://www.facebook.com/business/tools/ads-manager"
+    "url_c": "https://www.facebook.com/business/tools/ads-manager",
+    "likes": 28,
+    "dislikes": 9
   },
   {
     "Id": 5,
@@ -42,7 +50,9 @@
     "description_c": "Microsoft's advertising platform for Bing search and partner sites. Often provides lower cost-per-click and less competition than Google Ads, with unique audience demographics.",
     "icon_c": "Globe",
     "category_c": "Advertising Platform",
-    "url_c": "https://ads.microsoft.com/"
+    "url_c": "https://ads.microsoft.com/",
+    "likes": 18,
+    "dislikes": 4
   },
   {
     "Id": 6,
@@ -51,6 +61,8 @@
     "description_c": "Advanced SEO and PPC research tool with comprehensive keyword data, competitor analysis, and content gap analysis. Essential for campaign planning and competitive intelligence.",
     "icon_c": "Link",
     "category_c": "Research",
-    "url_c": "https://ahrefs.com/"
+    "url_c": "https://ahrefs.com/",
+    "likes": 35,
+    "dislikes": 2
   }
 ]
