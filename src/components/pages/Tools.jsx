@@ -153,7 +153,7 @@ const Tools = () => {
 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 {filteredTools.map((tool, index) => (
             <motion.div
-              key={`tool-${tool.Id || 'no-id'}-${tool.name || 'unnamed'}-${index}-${Date.now()}`}
+              key={tool.Id || index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
