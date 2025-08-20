@@ -1,24 +1,24 @@
 import React, { createContext, useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { clearUser, setUser } from "./store/userSlice";
-import Login from "@/components/pages/Login";
+import { clearUser, setUser } from "@/store/userSlice";
+import Wins from "@/components/pages/Wins";
+import Recommendations from "@/components/pages/Recommendations";
+import Admin from "@/components/pages/Admin";
+import Tools from "@/components/pages/Tools";
+import Learning from "@/components/pages/Learning";
+import YourAI from "@/components/pages/YourAI";
+import Calendar from "@/components/pages/Calendar";
+import Settings from "@/components/pages/Settings";
+import Scripts from "@/components/pages/Scripts";
 import Signup from "@/components/pages/Signup";
+import Dashboard from "@/components/pages/Dashboard";
+import PromptPassword from "@/components/pages/PromptPassword";
 import Callback from "@/components/pages/Callback";
 import ErrorPage from "@/components/pages/ErrorPage";
+import Login from "@/components/pages/Login";
 import ResetPassword from "@/components/pages/ResetPassword";
-import PromptPassword from "@/components/pages/PromptPassword";
-import Admin from "@/components/pages/Admin";
-import YourAI from "@/components/pages/YourAI";
-import Dashboard from "@/components/pages/Dashboard";
-import Tools from "@/components/pages/Tools";
-import Wins from "@/components/pages/Wins";
-import Learning from "@/components/pages/Learning";
-import Recommendations from "@/components/pages/Recommendations";
-import Settings from "@/components/pages/Settings";
-import Calendar from "@/components/pages/Calendar";
 import Community from "@/components/pages/Community";
-import Scripts from "@/components/pages/Scripts";
 import Layout from "@/components/organisms/Layout";
 
 // Create auth context
@@ -35,216 +35,75 @@ function AppContent() {
   
   // Initialize ApperUI once when the app loads
   useEffect(() => {
-const { ApperClient, ApperUI } = window.ApperSDK;
+    const { ApperClient, ApperUI } = window.ApperSDK;
     
     const client = new ApperClient({
       apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
       apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
     });
     
-// Initialize but don't show login yet
+    // Initialize but don't show login yet
     ApperUI.setup(client, {
       target: '#authentication',
       clientId: import.meta.env.VITE_APPER_PROJECT_ID,
       view: 'both',
-      enableEmailVerification: true,
-      requireEmailVerification: true,
-      emailVerification: {
-        enabled: true,
-        autoSend: true,
-        onSuccess: function(verificationResult) {
-          console.log("Email verification successful:", verificationResult);
-          
-          // Navigate to dashboard after successful email verification
-          try {
-            let redirectPath = new URLSearchParams(window.location.search).get('redirect');
-            if (redirectPath) {
-              navigate(redirectPath);
-            } else {
-              navigate('/');
-            }
-            
-            // Show success message
-            if (window.toast) {
-              window.toast.success('Email verified successfully! Welcome to PPC Hub.');
-            }
-          } catch (error) {
-            console.error("Post-verification navigation error:", error);
-            navigate('/');
-          }
-        },
-        onError: function(verificationError) {
-          console.error("Email verification failed:", verificationError);
-          
-          let errorMessage = 'Email verification failed';
-          if (verificationError.message) {
-            if (verificationError.message.includes('expired')) {
-              errorMessage = 'Verification code has expired. Please request a new one.';
-            } else if (verificationError.message.includes('invalid')) {
-              errorMessage = 'Invalid verification code. Please check your email and try again.';
-            } else if (verificationError.message.includes('network')) {
-              errorMessage = 'Network error during verification. Please check your connection and try again.';
-            } else if (verificationError.message.includes('send') || verificationError.message.includes('email')) {
-              errorMessage = 'Failed to send verification email. Please try again or contact support.';
-            } else {
-              errorMessage = `Email verification issue: ${verificationError.message}`;
-            }
-          }
-          
-          // Navigate to error page with specific verification error
-          const encodedErrorMessage = encodeURIComponent(errorMessage);
-          navigate(`/error?message=${encodedErrorMessage}`);
-          
-          // Show error toast if available
-          if (window.toast) {
-            window.toast.error(errorMessage);
-          }
-        },
-        onResend: function(resendResult) {
-          console.log("Verification email resent:", resendResult);
-          
-          // Enhanced resend handling with success/failure detection
-          if (resendResult && resendResult.success !== false) {
-            // Show success message for resend
-            if (window.toast) {
-              window.toast.success('Verification email resent! Please check your inbox and spam folder.');
-            } else {
-              alert('Verification email resent! Please check your inbox and spam folder.');
-            }
-          } else {
-            // Handle resend failure
-            const errorMessage = resendResult?.message || 'Failed to resend verification email. Please try again.';
-            console.error("Resend email failed:", errorMessage);
-            
-            if (window.toast) {
-              window.toast.error(errorMessage);
-            } else {
-              alert(errorMessage);
-            }
-          }
-          
-          // Log resend for debugging
-          console.log("Resend verification email result:", {
-            timestamp: new Date().toISOString(),
-            result: resendResult,
-            success: resendResult?.success !== false
-          });
-        },
-        onEmailSent: function(emailResult) {
-          console.log("Verification email sent:", emailResult);
-          
-          if (emailResult && emailResult.success !== false) {
-            if (window.toast) {
-              window.toast.success('Verification email sent! Please check your inbox and spam folder.');
-            }
-          } else {
-            console.error("Email sending failed:", emailResult);
-            if (window.toast) {
-              window.toast.error('Failed to send verification email. Please try signing up again.');
-            }
-          }
-        }
-      },
-      onSignupComplete: function(signupResult) {
-        console.log("Signup completed, triggering email verification:", signupResult);
-        
-        // Ensure email verification is triggered after successful signup
-        if (signupResult && signupResult.user && signupResult.user.email) {
-          console.log("Requesting verification email for:", signupResult.user.email);
-          
-          // Show immediate feedback
-          if (window.toast) {
-            window.toast.info('Account created! Please check your email for verification instructions.');
-          }
-        }
-      },
       onSuccess: function (user) {
-        // Only proceed with navigation logic after proper initialization
-        if (!isInitialized) {
-          setIsInitialized(true);
-        }
+        setIsInitialized(true);
+        // CRITICAL: This exact currentPath logic must be preserved in all implementations
+        // DO NOT simplify or modify this pattern as it ensures proper redirection flow
+        let currentPath = window.location.pathname + window.location.search;
+        let redirectPath = new URLSearchParams(window.location.search).get('redirect');
+        const isAuthPage = currentPath.includes('/login') || currentPath.includes('/signup') || 
+                           currentPath.includes('/callback') || currentPath.includes('/error') || 
+                           currentPath.includes('/prompt-password') || currentPath.includes('/reset-password');
         
-        try {
-          // CRITICAL: This exact currentPath logic must be preserved in all implementations
-          // DO NOT simplify or modify this pattern as it ensures proper redirection flow
-          let currentPath = window.location.pathname + window.location.search;
-          let redirectPath = new URLSearchParams(window.location.search).get('redirect');
-          const isAuthPage = currentPath.includes('/login') || currentPath.includes('/signup') || 
-                             currentPath.includes('/callback') || currentPath.includes('/error') || 
-                             currentPath.includes('/prompt-password') || currentPath.includes('/reset-password');
-          
-          if (user) {
-            // User is authenticated
-            if (redirectPath) {
-              navigate(redirectPath);
-            } else if (!isAuthPage) {
-              if (!currentPath.includes('/login') && !currentPath.includes('/signup')) {
-                navigate(currentPath);
-              } else {
-                navigate('/');
-              }
-            } else {
-              navigate('/');
-            }
-            // Store user information in Redux
-            dispatch(setUser(JSON.parse(JSON.stringify(user))));
-          } else {
-            // User is not authenticated
-            if (!isAuthPage) {
-              navigate(
-                currentPath.includes('/signup')
-                  ? `/signup?redirect=${currentPath}`
-                  : currentPath.includes('/login')
-                  ? `/login?redirect=${currentPath}`
-                  : '/login'
-              );
-            } else if (redirectPath) {
-              if (
-                !['error', 'signup', 'login', 'callback', 'prompt-password', 'reset-password'].some((path) => currentPath.includes(path))
-              ) {
-                navigate(`/login?redirect=${redirectPath}`);
-              } else {
-                navigate(currentPath);
-              }
-            } else if (isAuthPage) {
+        if (user) {
+          // User is authenticated
+          if (redirectPath) {
+            navigate(redirectPath);
+          } else if (!isAuthPage) {
+            if (!currentPath.includes('/login') && !currentPath.includes('/signup')) {
               navigate(currentPath);
             } else {
-              navigate('/login');
+              navigate('/');
             }
-            dispatch(clearUser());
+          } else {
+            navigate('/');
           }
-        } catch (error) {
-          console.error("Authentication navigation error:", error);
-          // Fallback to login page on any navigation errors
-          navigate('/login');
+          // Store user information in Redux
+          dispatch(setUser(JSON.parse(JSON.stringify(user))));
+        } else {
+          // User is not authenticated
+          if (!isAuthPage) {
+            navigate(
+              currentPath.includes('/signup')
+                ? `/signup?redirect=${currentPath}`
+                : currentPath.includes('/login')
+                ? `/login?redirect=${currentPath}`
+                : '/login'
+            );
+          } else if (redirectPath) {
+            if (
+              !['error', 'signup', 'login', 'callback', 'prompt-password', 'reset-password'].some((path) => currentPath.includes(path))
+            ) {
+              navigate(`/login?redirect=${redirectPath}`);
+            } else {
+              navigate(currentPath);
+            }
+          } else if (isAuthPage) {
+            navigate(currentPath);
+          } else {
+            navigate('/login');
+          }
+          dispatch(clearUser());
         }
       },
       onError: function(error) {
         console.error("Authentication failed:", error);
         setIsInitialized(true);
-        
-        // Enhanced error handling for password-related authentication issues
-        let errorMessage = 'Authentication failed';
-        
-        if (error.message) {
-          if (error.message.includes('password') || error.message.includes('reset') || error.message.includes('invite')) {
-            errorMessage = `Password authentication issue: ${error.message}`;
-          } else if (error.message.includes('email') || error.message.includes('invitation')) {
-            errorMessage = `Email verification issue: ${error.message}`;
-          } else {
-            errorMessage = error.message;
-          }
-        }
-        
-        // Navigate to error page with enhanced error message
-        const encodedErrorMessage = encodeURIComponent(errorMessage);
-        navigate(`/error?message=${encodedErrorMessage}`);
-        
-        // Clear any existing user state on authentication errors
-        dispatch(clearUser());
       }
     });
-  }, []);// No props and state should be bound
+  }, [navigate, dispatch]);
   
   // Authentication methods to share via context
   const authMethods = {
@@ -263,7 +122,20 @@ const { ApperClient, ApperUI } = window.ApperSDK;
   
   // Don't render routes until initialization is complete
   if (!isInitialized) {
-    return <div className="loading flex items-center justify-center p-6 h-full w-full"><svg className="animate-spin" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M12 2v4"></path><path d="m16.2 7.8 2.9-2.9"></path><path d="M18 12h4"></path><path d="m16.2 16.2 2.9 2.9"></path><path d="M12 18v4"></path><path d="m4.9 19.1 2.9-2.9"></path><path d="M2 12h4"></path><path d="m4.9 4.9 2.9 2.9"></path></svg></div>;
+    return (
+      <div className="loading flex items-center justify-center p-6 h-screen w-full">
+        <svg className="animate-spin" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2v4"></path>
+          <path d="m16.2 7.8 2.9-2.9"></path>
+          <path d="M18 12h4"></path>
+          <path d="m16.2 16.2 2.9 2.9"></path>
+          <path d="M12 18v4"></path>
+          <path d="m4.9 19.1 2.9-2.9"></path>
+          <path d="M2 12h4"></path>
+          <path d="m4.9 4.9 2.9 2.9"></path>
+        </svg>
+      </div>
+    );
   }
   
   return (
