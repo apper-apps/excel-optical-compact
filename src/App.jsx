@@ -42,11 +42,76 @@ const { ApperClient, ApperUI } = window.ApperSDK;
       apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
     });
     
-    // Initialize but don't show login yet
+// Initialize but don't show login yet
     ApperUI.setup(client, {
       target: '#authentication',
       clientId: import.meta.env.VITE_APPER_PROJECT_ID,
       view: 'both',
+      emailVerification: {
+        enableEmailVerification: true,
+        onSuccess: function(verificationResult) {
+          console.log("Email verification successful:", verificationResult);
+          
+          // Navigate to dashboard after successful email verification
+          try {
+            let redirectPath = new URLSearchParams(window.location.search).get('redirect');
+            if (redirectPath) {
+              navigate(redirectPath);
+            } else {
+              navigate('/');
+            }
+            
+            // Show success message
+            if (window.toast) {
+              window.toast.success('Email verified successfully! Welcome to PPC Hub.');
+            }
+          } catch (error) {
+            console.error("Post-verification navigation error:", error);
+            navigate('/');
+          }
+        },
+        onError: function(verificationError) {
+          console.error("Email verification failed:", verificationError);
+          
+          let errorMessage = 'Email verification failed';
+          if (verificationError.message) {
+            if (verificationError.message.includes('expired')) {
+              errorMessage = 'Verification code has expired. Please request a new one.';
+            } else if (verificationError.message.includes('invalid')) {
+              errorMessage = 'Invalid verification code. Please check your email and try again.';
+            } else if (verificationError.message.includes('network')) {
+              errorMessage = 'Network error during verification. Please check your connection and try again.';
+            } else {
+              errorMessage = `Email verification issue: ${verificationError.message}`;
+            }
+          }
+          
+          // Navigate to error page with specific verification error
+          const encodedErrorMessage = encodeURIComponent(errorMessage);
+          navigate(`/error?message=${encodedErrorMessage}`);
+          
+          // Show error toast if available
+          if (window.toast) {
+            window.toast.error(errorMessage);
+          }
+        },
+        onResend: function(resendResult) {
+          console.log("Verification email resent:", resendResult);
+          
+          // Show success message for resend
+          if (window.toast) {
+            window.toast.success('Verification email resent! Please check your inbox and spam folder.');
+          } else {
+            alert('Verification email resent! Please check your inbox and spam folder.');
+          }
+          
+          // Log resend for debugging
+          console.log("Resend verification email result:", {
+            timestamp: new Date().toISOString(),
+            result: resendResult
+          });
+        }
+      },
       onSuccess: function (user) {
         // Only proceed with navigation logic after proper initialization
         if (!isInitialized) {
@@ -107,7 +172,7 @@ const { ApperClient, ApperUI } = window.ApperSDK;
           // Fallback to login page on any navigation errors
           navigate('/login');
         }
-},
+      },
       onError: function(error) {
         console.error("Authentication failed:", error);
         setIsInitialized(true);
