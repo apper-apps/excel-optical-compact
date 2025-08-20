@@ -321,7 +321,7 @@ Google Ads Script Link *
 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {filteredScripts.map((script, index) => (
             <motion.div
-              key={`script-${script.Id || 'no-id'}-${index}`}
+              key={`script-${script.Id || script.name || 'unknown'}-${index}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
