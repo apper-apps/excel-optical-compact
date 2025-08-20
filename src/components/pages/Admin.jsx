@@ -56,8 +56,8 @@ const [showToolModal, setShowToolModal] = useState(false);
     category: '',
     icon: 'Tool'
   });
-  const [newScript, setNewScript] = useState({
-    name: '',
+const [newScript, setNewScript] = useState({
+    Name: '',
     description: '',
     category: '',
     link_c: '',
@@ -286,18 +286,18 @@ const handleCreateTool = async (e) => {
     }
   };
 const handleCreateScript = async (e) => {
-    e.preventDefault();
+e.preventDefault();
     
-    if (!newScript.name || !newScript.description || !newScript.category || !newScript.link_c) {
+    if (!newScript.Name || !newScript.description || !newScript.category || !newScript.link_c) {
       toast.error("Please fill in all required fields");
       return;
     }
 
     try {
-      await scriptService.create(newScript);
-      toast.success("Script added successfully!");
+      const createdScript = await scriptService.create(newScript);
+      toast.success("Google Ads script added successfully!");
       setNewScript({
-        name: '',
+        Name: '',
         description: '',
         category: '',
         link_c: '',
@@ -640,9 +640,10 @@ return (
 <AdminScriptModal
         show={showScriptModal}
         onClose={() => setShowScriptModal(false)}
-        onScriptAdded={handleCreateScript}
-        scriptData={newScript}
-        setScriptData={setNewScript}
+        onScriptAdded={() => {
+          // Optional: Could reload admin data or update local state
+          toast.success("Script management updated");
+        }}
       />
       {activeTab === "users" && (
         <motion.div

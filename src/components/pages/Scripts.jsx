@@ -46,9 +46,9 @@ const Scripts = () => {
       filtered = filtered.filter(script => script.category === selectedCategory);
     }
 
-    if (searchTerm) {
+if (searchTerm) {
       filtered = filtered.filter(script =>
-        script.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        script.Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         script.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
@@ -56,9 +56,9 @@ const Scripts = () => {
     setFilteredScripts(filtered);
   };
 
-  const handleScriptClick = (script) => {
-    window.open(script.link, '_blank');
-    toast.success(`Opening ${script.name} script`);
+const handleScriptClick = (script) => {
+    window.open(script.link_c, '_blank');
+    toast.success(`Opening ${script.Name} script`);
   };
 
 const categories = ["All", ...new Set(scripts.map(script => script.category))];
@@ -86,25 +86,25 @@ const [scriptForm, setScriptForm] = useState({
     }
   };
 
-  const handleAddScript = async (e) => {
+const handleAddScript = async (e) => {
     e.preventDefault();
-if (!scriptForm.name || !scriptForm.description || !scriptForm.category || !scriptForm.link) {
+    if (!scriptForm.name || !scriptForm.description || !scriptForm.category || !scriptForm.link) {
       toast.error("Please fill in all required fields");
       return;
     }
 
     try {
       const newScript = await scriptService.create({
-        name: scriptForm.name,
+        Name: scriptForm.name,
         description: scriptForm.description,
         category: scriptForm.category,
-link_c: scriptForm.link,
+        link_c: scriptForm.link,
         Tags: scriptForm.tags
       });
       
       setScripts(prev => [...prev, newScript]);
       toast.success("Script added successfully!");
-setScriptForm({ name: '', description: '', category: '', link: '', tags: '' });
+      setScriptForm({ name: '', description: '', category: '', link: '', tags: '' });
       setShowAddModal(false);
     } catch (err) {
       toast.error("Failed to add script. Please try again.");
@@ -338,8 +338,8 @@ Google Ads Script Link *
                 </div>
 
                 <div className="flex-1 mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3 font-display flex items-center">
-                    {script.name}
+<h3 className="text-lg font-semibold text-gray-900 mb-3 font-display flex items-center">
+                    {script.Name}
                     <ApperIcon name="ExternalLink" className="w-4 h-4 ml-2 text-gray-400" />
                   </h3>
                   <p className="text-gray-600 line-clamp-3">
