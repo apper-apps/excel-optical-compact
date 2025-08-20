@@ -593,9 +593,7 @@ return (
             </form>
           </motion.div>
         </div>
-      )}
-        </motion.div>
-      )}
+)}
 
       {activeTab === "users" && (
         <motion.div
@@ -1090,8 +1088,8 @@ return (
         </div>
       )}
 
-      {/* Settings Tab */}
-{activeTab === "settings" && (
+{/* Settings Tab */}
+      {activeTab === "settings" && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

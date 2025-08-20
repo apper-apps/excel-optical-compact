@@ -288,10 +288,11 @@ const handleVote = async (tool, voteType) => {
             </motion.div>
           ))}
         </div>
+)}
 
-        {/* Suggest Tool Section */}
-        <Card className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
-          <div className="flex items-center justify-between">
+      {/* Suggest Tool Section */}
+      <Card className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+        <div className="flex items-center justify-between">
             <div className="flex items-start space-x-4">
               <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                 <ApperIcon name="Lightbulb" className="w-5 h-5 text-green-600" />
