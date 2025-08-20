@@ -5,7 +5,9 @@ import { userService } from "@/services/api/userService";
 import { userMetricsService } from "@/services/api/userMetricsService";
 import { learningService } from "@/services/api/learningService";
 import { toolService } from "@/services/api/toolService";
+import { scriptService } from "@/services/api/scriptService";
 import ApperIcon from "@/components/ApperIcon";
+import AdminScriptModal from "@/components/pages/AdminScriptModal";
 import Dashboard from "@/components/pages/Dashboard";
 import Tools from "@/components/pages/Tools";
 import Learning from "@/components/pages/Learning";
@@ -33,7 +35,8 @@ const [users, setUsers] = useState([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [showEditLinkModal, setShowEditLinkModal] = useState(false);
-  const [showToolModal, setShowToolModal] = useState(false);
+const [showToolModal, setShowToolModal] = useState(false);
+  const [showScriptModal, setShowScriptModal] = useState(false);
   const [linkToEdit, setLinkToEdit] = useState(null);
   const [learningLinks, setLearningLinks] = useState([]);
   const [newUser, setNewUser] = useState({
@@ -52,6 +55,13 @@ const [users, setUsers] = useState([]);
     url: '',
     category: '',
     icon: 'Tool'
+  });
+  const [newScript, setNewScript] = useState({
+    name: '',
+    description: '',
+    category: '',
+    link_c: '',
+    Tags: ''
   });
   const [actionLoading, setActionLoading] = useState(false);
 
@@ -275,7 +285,29 @@ const handleCreateTool = async (e) => {
       setActionLoading(false);
     }
   };
+const handleCreateScript = async (e) => {
+    e.preventDefault();
+    
+    if (!newScript.name || !newScript.description || !newScript.category || !newScript.link_c) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
 
+    try {
+      await scriptService.create(newScript);
+      toast.success("Script added successfully!");
+      setNewScript({
+        name: '',
+        description: '',
+        category: '',
+        link_c: '',
+        Tags: ''
+      });
+      setShowScriptModal(false);
+    } catch (error) {
+      toast.error("Failed to add script. Please try again.");
+    }
+  };
   const handleDeleteTool = async (toolId) => {
     try {
       await toolService.delete(toolId);
@@ -411,8 +443,15 @@ return (
               >
                 <ApperIcon name="Wrench" className="w-6 h-6 text-secondary" />
                 <span>Add Tool</span>
+</Button>
+              <Button 
+                onClick={() => setShowScriptModal(true)}
+                className="bg-purple-500 hover:bg-purple-600 text-white"
+              >
+                <ApperIcon name="Code" className="w-4 h-4 mr-2" />
+                Add Script
               </Button>
-<Button 
+<Button
                 variant="outline" 
                 className="h-auto p-4 flex flex-col items-center space-y-2"
                 onClick={() => setShowCreateModal(true)}
@@ -598,7 +637,13 @@ return (
           </motion.div>
         </div>
 )}
-
+<AdminScriptModal
+        show={showScriptModal}
+        onClose={() => setShowScriptModal(false)}
+        onScriptAdded={handleCreateScript}
+        scriptData={newScript}
+        setScriptData={setNewScript}
+      />
       {activeTab === "users" && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
