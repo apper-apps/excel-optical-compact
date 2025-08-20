@@ -3,15 +3,8 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../App';
 
 function Login() {
-  const { isInitialized } = useContext(AuthContext);
-  
-  useEffect(() => {
-    if (isInitialized) {
-      // Show login UI in this component
-      const { ApperUI } = window.ApperSDK;
-      ApperUI.showLogin("#authentication");
-    }
-  }, [isInitialized]);
+  // ApperUI is now centrally initialized in App.jsx
+  // This component only provides the container for the authentication interface
   
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface-50 dark:bg-surface-900">

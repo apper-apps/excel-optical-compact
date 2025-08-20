@@ -42,18 +42,22 @@ function AppContent() {
       apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
     });
     
-// Initialize but don't show login yet
+// Initialize ApperUI with comprehensive email verification configuration
     ApperUI.setup(client, {
       target: '#authentication',
       clientId: import.meta.env.VITE_APPER_PROJECT_ID,
       view: 'both',
-      // Enable email verification with 6-digit codes and resend functionality
+      // Complete email verification configuration
       enableEmailVerification: true,
       verificationCodeLength: 6,
       enableResendCode: true,
-      resendCodeTimeout: 60,
+      resendCodeTimeout: 60, // 60 seconds between resend attempts
+      maxResendAttempts: 5, // Maximum resend attempts
+      verificationTimeout: 300, // 5 minutes for code expiration
       onSuccess: function (user) {
         setIsInitialized(true);
+        console.log("Authentication successful:", user);
+        
         // CRITICAL: This exact currentPath logic must be preserved in all implementations
         // DO NOT simplify or modify this pattern as it ensures proper redirection flow
         let currentPath = window.location.pathname + window.location.search;
@@ -107,9 +111,20 @@ function AppContent() {
         console.error("Authentication failed:", error);
         setIsInitialized(true);
       },
+      onVerificationSent: function(email) {
+        console.log("Verification code sent to:", email);
+        setIsInitialized(true);
+      },
       onVerificationError: function(error) {
         console.error("Email verification failed:", error);
-        // Handle verification-specific errors
+        setIsInitialized(true);
+        // Handle verification-specific errors with user-friendly messages
+      },
+      onResendSuccess: function(email) {
+        console.log("Verification code resent to:", email);
+      },
+      onResendError: function(error) {
+        console.error("Failed to resend verification code:", error);
       }
     });
   }, [navigate, dispatch]);
