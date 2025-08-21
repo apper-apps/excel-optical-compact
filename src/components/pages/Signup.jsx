@@ -5,11 +5,29 @@ import { AuthContext } from '../../App';
 function Signup() {
   const { isInitialized } = useContext(AuthContext);
   
-  useEffect(() => {
+useEffect(() => {
     if (isInitialized) {
-      // Show signup UI in this component
+      // Show signup UI with email verification enabled
       const { ApperUI } = window.ApperSDK;
-      ApperUI.showSignup("#authentication");
+      const emailVerificationEnabled = import.meta.env.VITE_APPER_EMAIL_VERIFICATION_ENABLED === 'true';
+      
+      console.log('Initializing signup with email verification:', emailVerificationEnabled);
+      
+      ApperUI.showSignup("#authentication", {
+        emailVerification: emailVerificationEnabled,
+        onError: (error) => {
+          console.error('Signup error:', error);
+          if (error.message && error.message.includes('verification')) {
+            console.error('Email verification failed. Please check configuration.');
+          }
+        },
+        onSuccess: (user) => {
+          console.log('Signup successful:', user);
+          if (emailVerificationEnabled) {
+            console.log('Verification email should have been sent to:', user.email);
+          }
+        }
+      });
     }
   }, [isInitialized]);
   

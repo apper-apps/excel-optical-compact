@@ -89,9 +89,15 @@ async sendInvitation(email, role) {
         apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
       });
 
-      // Validate environment variables
+      // Validate environment variables including email verification
       if (!import.meta.env.VITE_APPER_PROJECT_ID || !import.meta.env.VITE_APPER_PUBLIC_KEY) {
         throw new Error("Authentication configuration missing. Please contact system administrator.");
+      }
+
+      // Check if email verification is enabled
+      const emailVerificationEnabled = import.meta.env.VITE_APPER_EMAIL_VERIFICATION_ENABLED === 'true';
+      if (!emailVerificationEnabled) {
+        console.warn('Email verification is disabled. Emails may not be sent automatically.');
       }
 
       // Create email invitation record in database with enhanced data
@@ -103,18 +109,19 @@ async sendInvitation(email, role) {
           status_c: 'pending',
           invitation_type_c: 'user_invite',
           expires_at_c: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days expiry
-          created_by_c: 'system'
+          created_by_c: 'system',
+          email_verification_enabled_c: emailVerificationEnabled
         }]
       };
 
-      console.log('Sending invitation email to:', email, 'with role:', role);
+      console.log('Sending invitation email to:', email, 'with role:', role, 'Email verification enabled:', emailVerificationEnabled);
       const response = await apperClient.createRecord('email_invitation_c', invitationData);
 
       // Enhanced response validation
       if (!response || !response.success) {
         const errorMsg = response?.message || 'Unknown error occurred while sending invitation';
         console.error('Invitation API error:', errorMsg);
-        throw new Error(`Failed to send invitation email: ${errorMsg}`);
+        throw new Error(`Failed to send invitation email: ${errorMsg}. Please ensure email verification is properly configured.`);
       }
 
       // Validate response data
@@ -127,15 +134,17 @@ async sendInvitation(email, role) {
         email,
         role,
         invitationId,
-        sentAt: new Date().toISOString()
+        sentAt: new Date().toISOString(),
+        emailVerificationEnabled
       });
 
       return {
         success: true,
-        message: `Password setup invitation sent to ${email} with ${role} role. The invitation will expire in 7 days.`,
+        message: `Password setup invitation sent to ${email} with ${role} role. ${emailVerificationEnabled ? 'Verification email will be sent automatically when they sign up.' : 'Please ensure they complete the signup process.'} The invitation will expire in 7 days.`,
         sentAt: new Date().toISOString(),
         invitationId: invitationId || null,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        emailVerificationEnabled
       };
     } catch (error) {
       // Enhanced error logging and handling
@@ -145,7 +154,8 @@ async sendInvitation(email, role) {
         role,
         error: errorMessage,
         stack: error.stack,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        emailVerificationConfig: import.meta.env.VITE_APPER_EMAIL_VERIFICATION_ENABLED
       });
 
       // Provide user-friendly error messages based on error type
@@ -155,6 +165,8 @@ async sendInvitation(email, role) {
         throw new Error('Authentication error: Please log out and log back in, then try again.');
       } else if (errorMessage.includes('already exists') || errorMessage.includes('duplicate')) {
         throw new Error(`An invitation has already been sent to ${email}. Please check if they received it.`);
+      } else if (errorMessage.includes('email verification') || errorMessage.includes('verification')) {
+        throw new Error(`Email verification configuration issue: ${errorMessage}. Please contact system administrator.`);
       } else {
         throw new Error(`Failed to send password setup invitation: ${errorMessage}`);
       }
