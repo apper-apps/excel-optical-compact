@@ -2,8 +2,6 @@ import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../App";
 
-export default Login;
-
 function Login() {
   const { isInitialized } = useContext(AuthContext);
   
@@ -40,6 +38,8 @@ function Login() {
           </p>
         </div>
       </div>
-    </div>
+</div>
   );
 }
+
+export default Login;
